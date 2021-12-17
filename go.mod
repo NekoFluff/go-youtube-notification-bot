@@ -1,4 +1,4 @@
-module alexnou.com/gobot
+module github.com/NekoFluff/gobot
 
 go 1.17
 

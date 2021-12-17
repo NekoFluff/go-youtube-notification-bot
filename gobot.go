@@ -11,7 +11,7 @@ import (
 	"strings"
 	"syscall"
 
-	"alexnou.com/gobot/commands"
+	"github.com/NekoFluff/gobot/commands"
 	"github.com/bwmarrin/discordgo"
 )
 
