@@ -72,7 +72,7 @@ func loadMongo() []ChannelFeed {
 		log.Fatal(err)
 	}
 
-	// fmt.Printf("%#v", results)
+	fmt.Printf("%#v", results)
 	return results
 }
 
@@ -97,9 +97,12 @@ func main() {
 		log.Fatal("$WEBPAGE must be set")
 	}
 
+	client := gohubbub.NewClient(webpage, "YT Notifier")
+
 	for _, channelFeed := range channelFeeds {
+		fmt.Printf("%#v", channelFeed)
+
 		topicURL := channelFeed.TopicURL
-		client := gohubbub.NewClient(webpage, "YT Notifier")
 		client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
 			// Handle update notification.
 			var feed pubsubhub.Feed
@@ -115,8 +118,8 @@ func main() {
 				}
 			}
 		})
-		client.StartAndServe("", port)
 	}
+	client.StartAndServe("", port)
 
 	// // Create a new Discord session using the provided bot token.
 	// dg, err := discordgo.New("Bot " + Token)
