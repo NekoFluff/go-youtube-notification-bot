@@ -2,17 +2,19 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 
 	"github.com/NekoFluff/gobot/commands"
+	"github.com/NekoFluff/gobot/youtube/pubsubhub"
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
 // Variables used for command line parameters
@@ -28,34 +30,54 @@ func init() {
 }
 
 func main() {
-	// Create a new Discord session using the provided bot token.
-	dg, err := discordgo.New("Bot " + Token)
-	if err != nil {
-		fmt.Println("error creating Discord session,", err)
-		return
+	// Load the .env file in the current directory
+	godotenv.Load()
+
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
 	}
 
-	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
+	http.HandleFunc("/pubsubhub", func(w http.ResponseWriter, r *http.Request) {
+		var feed pubsubhub.Feed
+		xml.NewDecoder(r.Body).Decode(&feed)
 
-	// In this example, we only care about receiving message events.
-	dg.Identify.Intents = discordgo.IntentsGuildMessages
+		log.Printf("Body: %v", feed)
+		fmt.Fprintf(w, "")
+	})
 
-	// Open a websocket connection to Discord and begin listening.
-	err = dg.Open()
-	if err != nil {
-		fmt.Println("error opening connection,", err)
-		return
-	}
+	log.Printf("Listening on port %v\n", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 
-	// Wait here until CTRL-C or other term signal is received.
-	fmt.Println("Bot is now running. Press CTRL-C to exit.")
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
+	// // Create a new Discord session using the provided bot token.
+	// dg, err := discordgo.New("Bot " + Token)
+	// if err != nil {
+	// 	fmt.Println("error creating Discord session,", err)
+	// 	return
+	// }
 
-	// Cleanly close down the Discord session.
-	dg.Close()
+	// // Register the messageCreate func as a callback for MessageCreate events.
+	// dg.AddHandler(messageCreate)
+
+	// // In this example, we only care about receiving message events.
+	// dg.Identify.Intents = discordgo.IntentsGuildMessages
+
+	// // Open a websocket connection to Discord and begin listening.
+	// err = dg.Open()
+	// if err != nil {
+	// 	fmt.Println("error opening connection,", err)
+	// 	return
+	// }
+
+	// // Wait here until CTRL-C or other term signal is received.
+	// fmt.Println("Bot is now running. Press CTRL-C to exit.")
+	// sc := make(chan os.Signal, 1)
+	// signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	// <-sc
+
+	// // Cleanly close down the Discord session.
+	// dg.Close()
 }
 
 type Gopher struct {
