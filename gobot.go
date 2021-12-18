@@ -76,6 +76,18 @@ func loadMongo() []ChannelFeed {
 	return results
 }
 
+// TODO: Get feeds (data package)
+// TODO: Schedule Cron Jobs (cron package)
+// TODO: Save and load schedules livestreams (data package)
+// TODO: Server channel messaging on discord (discord package)
+// TODO: DM for debugging
+// TODO: env variable for developers
+// TODO: evn variable for developer mode
+// TODO: Tests
+// TODO: Save and load subscriptions
+// TODO: Subscription commnad (cmmands package)
+// TODO: Documentation
+
 func main() {
 	// Load the .env file in the current directory
 	godotenv.Load()
