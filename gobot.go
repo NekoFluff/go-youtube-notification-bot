@@ -9,11 +9,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/NekoFluff/gobot/commands"
 	"github.com/NekoFluff/gobot/youtube/pubsubhub"
 	"github.com/bwmarrin/discordgo"
+	"github.com/dpup/gohubbub"
 	"github.com/joho/godotenv"
 )
 
@@ -33,22 +35,34 @@ func main() {
 	// Load the .env file in the current directory
 	godotenv.Load()
 
-	port := os.Getenv("PORT")
+	port, err := strconv.Atoi(os.Getenv("PORT"))
 
-	if port == "" {
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if port == 0 {
 		log.Fatal("$PORT must be set")
 	}
 
-	http.HandleFunc("/pubsubhub", func(w http.ResponseWriter, r *http.Request) {
+	topicURL := "https://www.youtube.com/xml/feeds/videos.xml?channel_id=UCPem6W8TYuoSs0cIAnkKy6Q"
+	client := gohubbub.NewClient(fmt.Sprintf("yt-notifier-bot.herokuapp.com:%d", port), "YT Notifier")
+	client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
+		// Handle update notification.
 		var feed pubsubhub.Feed
-		xml.NewDecoder(r.Body).Decode(&feed)
+		xmlError := xml.Unmarshal(body, &feed)
 
-		log.Printf("Body: %v", feed)
-		fmt.Fprintf(w, "")
+		if xmlError != nil {
+			log.Printf("XML Parse Error %v", xmlError)
+
+		} else {
+			log.Println("Feed title:", feed.Title)
+			for _, entry := range feed.Entries {
+				log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)
+			}
+		}
 	})
-
-	log.Printf("Listening on port %v\n", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	client.StartAndServe("", port)
 
 	// // Create a new Discord session using the provided bot token.
 	// dg, err := discordgo.New("Bot " + Token)
