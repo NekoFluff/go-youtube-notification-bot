@@ -24,8 +24,6 @@ var (
 	Token string
 )
 
-const KuteGoAPIURL = "https://kutego-api-xxxxx-ew.a.run.app"
-
 func init() {
 	flag.StringVar(&Token, "t", "", "Bot Token")
 	flag.Parse()
@@ -46,7 +44,7 @@ func main() {
 	}
 
 	topicURL := "https://www.youtube.com/xml/feeds/videos.xml?channel_id=UCPem6W8TYuoSs0cIAnkKy6Q"
-	client := gohubbub.NewClient(fmt.Sprintf("yt-notifier-bot.herokuapp.com:%d", port), "YT Notifier")
+	client := gohubbub.NewClient("yt-notifier-bot.herokuapp.com", "YT Notifier")
 	client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
 		// Handle update notification.
 		var feed pubsubhub.Feed
