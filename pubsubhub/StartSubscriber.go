@@ -30,6 +30,15 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 
 		topicURL := channelFeed.TopicURL
 		client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
+			// Handle unexpected panics by sending a developer message in discord
+			defer func() {
+				if r := recover(); r != nil {
+					str := fmt.Sprintf("Recovered from panic. %v", r)
+					log.Println(str)
+					discord.SendDeveloperMessage(dg, str)
+				}
+			}()
+
 			// Handle update notification.
 			feed, xmlError := ParseXML(string(body))
 
