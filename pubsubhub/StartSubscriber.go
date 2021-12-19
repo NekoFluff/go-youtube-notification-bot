@@ -39,8 +39,9 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 
 			} else {
 				log.Println("Feed title:", feed.Title)
+				discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing XML feed: %#v", string(body)))
+				discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing feed: %#v", feed))
 				for _, entry := range feed.Entries {
-					discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing feed link %s", entry.Link))
 					log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)
 
 					livestream, err := convertEntryToLivestream(entry)
