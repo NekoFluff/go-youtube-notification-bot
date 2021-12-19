@@ -15,6 +15,8 @@ Requirements: MongoDB database (e.g. Free MongoDB Atlas cluster), Heroku, golang
 I hosted my bot on Heroku. Here's a dev guide on setting it up: https://devcenter.heroku.com/articles/git
 
 ### Set up environment variables / config vars
+
+```
 PORT=port# (only set if running on local machine for testing)
 
 COMMAND_PREFIX=command prefix
@@ -28,6 +30,7 @@ DEVELOPER_MODE=ON (enables the DMs that help debug issues)
 WEBPAGE=the heroku webpage (e.g. your-gobot-app.herokuapp.com)
 
 MONGO_CONNECTION_URI=connection uri to a mongodb instance. can be obtained from the mongo atlas page
+```
 
 ### Set up MongoDB Database and Collections
 
