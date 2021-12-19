@@ -5,17 +5,12 @@ import (
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func GetFeeds() ([]ChannelFeed, error) {
 	client := GetClient()
 	defer DisconnectClient(client)
 
-	// Ping the primary
-	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		panic(err)
-	}
 	fmt.Println("Successfully connected and pinged.")
 
 	collection := client.Database("hololive-en").Collection("feeds")

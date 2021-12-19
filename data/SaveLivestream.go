@@ -10,17 +10,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func SaveLivestream(livestream Livestream) *mongo.UpdateResult {
 	client := GetClient()
 	defer DisconnectClient(client)
 
-	// Ping the primary
-	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		panic(err)
-	}
 	fmt.Println("Successfully connected and pinged.")
 
 	collection := client.Database("hololive-en").Collection("scheduledLivestreams")

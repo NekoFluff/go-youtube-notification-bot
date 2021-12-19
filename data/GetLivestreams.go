@@ -4,17 +4,11 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 func GetLivestreams() ([]Livestream, error) {
 	client := GetClient()
 	defer DisconnectClient(client)
-
-	// Ping the primary
-	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
-		panic(err)
-	}
 
 	subscriptions := client.Database("hololive-en").Collection("scheduledLivestreams")
 	cur, err := subscriptions.Find(context.Background(), bson.D{})

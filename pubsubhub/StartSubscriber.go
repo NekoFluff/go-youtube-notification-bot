@@ -16,6 +16,9 @@ import (
 var sentMessages map[string]time.Time = make(map[string]time.Time)
 
 func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
+	// Reschedule all notifications from the db
+	discord.RecheduleAllLivestreamNotifications(dg)
+
 	// Get the youtube channel feeds to subscribe to
 	channelFeeds, err := data.GetFeeds()
 	if err != nil {
