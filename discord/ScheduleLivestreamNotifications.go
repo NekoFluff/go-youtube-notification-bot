@@ -15,10 +15,10 @@ func ScheduleLivestreamNotifications(dg *discordgo.Session, url string, t time.T
 	if fifteenMinCronJobs[url] != nil {
 		fifteenMinCronJobs[url].Stop()
 	}
-	fifteenMinCronJobs[url] = ScheduleNotification(dg, t.Add(time.Duration(-15)*time.Minute), "godot", fmt.Sprintf("Livestream starting in 15 minutes! %s", url))
+	fifteenMinCronJobs[url] = ScheduleNotification(dg, t.Add(time.Duration(-15)*time.Minute), "gobot", fmt.Sprintf("Livestream starting in 15 minutes! %s", url))
 
 	if liveCronJobs[url] != nil {
 		liveCronJobs[url].Stop()
 	}
-	liveCronJobs[url] = ScheduleNotification(dg, t, "godot-live", fmt.Sprintf("Livestream starting! %s", url))
+	liveCronJobs[url] = ScheduleNotification(dg, t, "gobot-live", fmt.Sprintf("Livestream starting! %s", url))
 }
