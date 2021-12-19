@@ -14,7 +14,10 @@ import (
 
 func StartSubscriber(webpage string, port int) {
 	// Get the youtube channel feeds to subscribe to
-	channelFeeds := data.GetFeeds()
+	channelFeeds, err := data.GetFeeds()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	client := gohubbub.NewClient(webpage, "YT Notifier")
 

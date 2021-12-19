@@ -3,13 +3,12 @@ package data
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func GetFeeds() []ChannelFeed {
+func GetFeeds() ([]ChannelFeed, error) {
 	client := GetClient()
 	defer DisconnectClient(client)
 
@@ -22,13 +21,13 @@ func GetFeeds() []ChannelFeed {
 	collection := client.Database("hololive-en").Collection("feeds")
 	cur, err := collection.Find(context.Background(), bson.D{})
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	var results []ChannelFeed
 	if err = cur.All(context.Background(), &results); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return results
+	return results, nil
 }
