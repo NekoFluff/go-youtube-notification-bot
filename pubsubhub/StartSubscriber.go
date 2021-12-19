@@ -33,19 +33,27 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 			xmlError := xml.Unmarshal(body, &feed)
 
 			if xmlError != nil {
-				log.Printf("XML Parse Error %v", xmlError)
+				errorMsg := fmt.Sprintf("XML Parse Error %v", xmlError)
+				log.Println(errorMsg)
+				discord.SendDeveloperMessage(dg, errorMsg)
 
 			} else {
 				log.Println("Feed title:", feed.Title)
 				for _, entry := range feed.Entries {
+					discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing feed link %s", entry.Link))
 					log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)
 
 					livestream, err := convertEntryToLivestream(entry)
 					if err != nil {
 						log.Println(err)
+						discord.SendDeveloperMessage(dg, fmt.Sprintf("%v", err))
+
 					} else {
 						data.SaveLivestream(livestream)
+						// discord.SendChannelMessage(dg, [Author] will livestream on [Date] - [Link])
 						discord.ScheduleLivestreamNotifications(dg, livestream.Url, livestream.Date)
+						discord.SendDeveloperMessage(dg, fmt.Sprintf("Processed livestream %s", livestream.Url))
+
 					}
 				}
 			}
