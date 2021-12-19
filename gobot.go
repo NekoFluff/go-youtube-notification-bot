@@ -22,7 +22,6 @@ func init() {
 }
 
 // TODO: Schedule Cron Jobs (cron package)
-// TODO: Save and load schedules livestreams (data package)
 // TODO: Server channel messaging on discord (discord package)
 // TODO: DM for debugging
 // TODO: env variable for developers

@@ -2,14 +2,13 @@ package data
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-func GetFeeds() []ChannelFeed {
+func GetLivestreams() []Livestream {
 	client := GetClient()
 	defer DisconnectClient(client)
 
@@ -17,15 +16,14 @@ func GetFeeds() []ChannelFeed {
 	if err := client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		panic(err)
 	}
-	fmt.Println("Successfully connected and pinged.")
 
-	collection := client.Database("hololive-en").Collection("feeds")
-	cur, err := collection.Find(context.Background(), bson.D{})
+	subscriptions := client.Database("hololive-en").Collection("scheduledLivestreams")
+	cur, err := subscriptions.Find(context.Background(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var results []ChannelFeed
+	var results []Livestream
 	if err = cur.All(context.Background(), &results); err != nil {
 		log.Fatal(err)
 	}
