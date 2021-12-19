@@ -42,7 +42,7 @@ func main() {
 	}
 	defer discord.StopBot(dg)
 
-	discord.SendChannelMessage(dg, "gobot", "Gobot is active!")
+	discord.SendChannelMessage(dg, "gobot", fmt.Sprintf("%s is online!", dg.State.User))
 
 	// Load environment variables for pubsubhub subscriber
 	webpage := utils.GetEnvVar("WEBPAGE")
