@@ -25,7 +25,6 @@ func init() {
 	flag.Parse()
 }
 
-// TODO: DM for debugging
 // TODO: Tests
 // TODO: Save and load subscriptions
 // TODO: Subscription commnad (cmmands package)

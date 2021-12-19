@@ -38,8 +38,9 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 				discord.SendDeveloperMessage(dg, errorMsg)
 
 			} else {
+				discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing feed: %#v", feed))
+				discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing feed: %#v", feed))
 				for _, entry := range feed.Entries {
-					discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing feed entry: %s", entry.Link))
 					log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)
 
 					livestream, err := convertEntryToLivestream(entry)
@@ -51,7 +52,7 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 						data.SaveLivestream(livestream)
 						// discord.SendChannelMessage(dg, [Author] will livestream on [Date] - [Link])
 						discord.ScheduleLivestreamNotifications(dg, livestream.Url, livestream.Date)
-						discord.SendDeveloperMessage(dg, fmt.Sprintf("Processed livestream: %s", livestream.Url))
+						discord.SendDeveloperMessage(dg, fmt.Sprintf("Processed livestream %s", livestream.Url))
 
 					}
 				}
