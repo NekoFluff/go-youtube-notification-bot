@@ -22,25 +22,28 @@ func consume(name string, x chan int, done chan bool) {
 	}
 }
 
-var GoRoutine = &DiscordCommand{Command: "!goroutine", Execute: func(s *discordgo.Session, m *discordgo.MessageCreate) {
-	x := make(chan int)
-	done := make(chan bool)
-	start := time.Now()
+var GoRoutine = &DiscordCommand{
+	Command:     "!goroutine",
+	Description: "Goroutine test",
+	Execute: func(s *discordgo.Session, m *discordgo.MessageCreate) {
+		x := make(chan int)
+		done := make(chan bool)
+		start := time.Now()
 
-	go consume("Consumer1", x, done)
-	go consume("Consumer2", x, done)
-	go consume("Consumer3", x, done)
+		go consume("Consumer1", x, done)
+		go consume("Consumer2", x, done)
+		go consume("Consumer3", x, done)
 
-	count := 24
-	for i := 0; i < count; i++ {
-		x <- i + 1
-	}
-	close(x)
-	<-done
-	<-done
-	<-done
+		count := 24
+		for i := 0; i < count; i++ {
+			x <- i + 1
+		}
+		close(x)
+		<-done
+		<-done
+		<-done
 
-	duration := time.Since(start)
+		duration := time.Since(start)
 
-	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Start: %v | Duration: %v", start, duration))
-}}
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Start: %v | Duration: %v", start, duration))
+	}}

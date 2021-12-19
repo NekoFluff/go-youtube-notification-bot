@@ -7,11 +7,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var AllCommands = []*commands.DiscordCommand{
-	commands.Help,
-	commands.GoRoutine,
-}
-
 func StartBot(Token string) (s *discordgo.Session, err error) {
 	// Create a new Discord session using the provided bot token.
 	s, err = discordgo.New("Bot " + Token)
@@ -45,7 +40,12 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	for _, c := range AllCommands {
+	// Help command has to be separated from all commands to prevent cyclic behavior
+	if m.Content == commands.Help.Command {
+		commands.Help.Execute(s, m)
+	}
+
+	for _, c := range commands.AllCommands {
 		if m.Content == c.Command {
 			c.Execute(s, m)
 		}
