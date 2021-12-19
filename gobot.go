@@ -26,8 +26,6 @@ func init() {
 }
 
 // TODO: DM for debugging
-// TODO: env variable for developers
-// TODO: evn variable for developer mode
 // TODO: Tests
 // TODO: Save and load subscriptions
 // TODO: Subscription commnad (cmmands package)

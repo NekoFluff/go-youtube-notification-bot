@@ -1,0 +1,37 @@
+package discord
+
+import (
+	"fmt"
+	"os"
+	"strings"
+
+	"github.com/bwmarrin/discordgo"
+)
+
+func SendDeveloperMessage(dg *discordgo.Session, message string) {
+	developer_mode := os.Getenv("DEVELOPER_MODE")
+	if developer_mode != "ON" && developer_mode != "1" {
+		return
+	}
+
+	developerIds := getDeveloperIds()
+
+	for _, developerId := range developerIds {
+		ch, err := dg.UserChannelCreate(developerId)
+		if err != nil {
+			fmt.Println(err)
+		}
+		_, err = dg.ChannelMessageSend(ch.ID, message)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
+func getDeveloperIds() []string {
+	ids := os.Getenv("DEVELOPER_IDS")
+	if ids == "" {
+		return []string{}
+	}
+	return strings.Split(ids, ",")
+}
