@@ -8,11 +8,11 @@ import (
 	"github.com/robfig/cron"
 )
 
-func ScheduleNotification(dg *discordgo.Session, t time.Time, message string) *cron.Cron {
+func ScheduleNotification(dg *discordgo.Session, t time.Time, channel string, message string) *cron.Cron {
 	var c = cron.New()
 	spec := utils.TimeToCron(t)
 	c.AddFunc(spec, func() {
-		SendChannelMessage(dg, "gobot", message)
+		SendChannelMessage(dg, channel, message)
 	})
 	c.Start()
 	return c
