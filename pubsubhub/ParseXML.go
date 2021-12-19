@@ -2,16 +2,13 @@ package pubsubhub
 
 import (
 	"encoding/xml"
-	"fmt"
 )
 
-func ParseXML(xmlString string) Feed {
+func ParseXML(xmlString string) (Feed, error) {
 	var feed Feed
 	b := []byte(xmlString)
 
-	xml.Unmarshal(b, &feed)
-	fmt.Println("Parsed")
-	fmt.Println(feed)
+	err := xml.Unmarshal(b, &feed)
 
-	return feed
+	return feed, err
 }

@@ -1,7 +1,6 @@
 package pubsubhub
 
 import (
-	"encoding/xml"
 	"fmt"
 	"log"
 	"strconv"
@@ -31,8 +30,7 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 		topicURL := channelFeed.TopicURL
 		client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
 			// Handle update notification.
-			var feed Feed
-			xmlError := xml.Unmarshal(body, &feed)
+			feed, xmlError := ParseXML(string(body))
 
 			if xmlError != nil {
 				errorMsg := fmt.Sprintf("XML Parse Error %v", xmlError)

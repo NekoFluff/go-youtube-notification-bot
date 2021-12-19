@@ -1,12 +1,10 @@
 package pubsubhub
 
 import (
-	"encoding/xml"
 	"testing"
 )
 
 func TestParseXML(t *testing.T) {
-	var feed Feed
 	body := `<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns="http://www.w3.org/2005/Atom">
   <link rel="hub" href="https://pubsubhubbub.appspot.com" />
   <link rel="alex" href="wtf" />
@@ -27,7 +25,7 @@ func TestParseXML(t *testing.T) {
     <updated>2015-03-09T19:05:24.552394234+00:00</updated>
   </entry>
 </feed>`
-	xmlError := xml.Unmarshal([]byte(body), &feed)
+	feed, xmlError := ParseXML(body)
 	if xmlError != nil {
 		t.Error(xmlError)
 	}
