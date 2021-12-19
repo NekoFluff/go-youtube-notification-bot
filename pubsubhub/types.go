@@ -22,7 +22,7 @@ type Entry struct {
 	VideoId   string   `xml:"videoId"`
 	ChannelId string   `xml:"channelId"`
 	Title     string   `xml:"title"`
-	Link      string   `xml:"link,attr"`
+	Link      Link     `xml:"link"`
 	Author    Author   `xml:"author"`
 	Published string   `xml:"published"`
 	Updated   string   `xml:"updated"`

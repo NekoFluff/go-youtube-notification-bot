@@ -63,7 +63,7 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 }
 
 func convertEntryToLivestream(entry Entry) (livestream data.Livestream, err error) {
-	livestreamUnixTime, err := getLivestreamUnixTime(entry.Link)
+	livestreamUnixTime, err := getLivestreamUnixTime(entry.Link.Href)
 
 	if err != nil {
 		return
@@ -71,7 +71,7 @@ func convertEntryToLivestream(entry Entry) (livestream data.Livestream, err erro
 
 	livestream = data.Livestream{
 		Author: entry.Author.Name,
-		Url:    entry.Link,
+		Url:    entry.Link.Href,
 		Date:   livestreamUnixTime,
 	}
 
