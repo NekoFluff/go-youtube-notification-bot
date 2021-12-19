@@ -55,7 +55,7 @@ func processFeed(dg *discordgo.Session, feed Feed) {
 		livestream, err := convertEntryToLivestream(entry)
 		if err != nil {
 			log.Println(err)
-			discord.SendDeveloperMessage(dg, fmt.Sprintf("%v", err))
+			discord.SendDeveloperMessage(dg, fmt.Sprintf("%s it not a livestream. Error: %v", entry.Link.Href, err))
 
 		} else {
 			data.SaveLivestream(livestream)
