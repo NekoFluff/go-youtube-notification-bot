@@ -25,8 +25,6 @@ func init() {
 	flag.Parse()
 }
 
-// TODO: Schedule Cron Jobs (cron package)
-// TODO: Server channel messaging on discord (discord package)
 // TODO: DM for debugging
 // TODO: env variable for developers
 // TODO: evn variable for developer mode
@@ -39,6 +37,16 @@ func main() {
 	// Load the .env file in the current directory
 	godotenv.Load()
 
+	// Start up discord bot
+	token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
+	dg, err := discord.StartBot(token)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer discord.StopBot(dg)
+
+	discord.SendChannelMessage(dg, "gobot", "Gobot is active!")
+
 	// Load environment variables for pubsubhub subscriber
 	webpage := utils.GetEnvVar("WEBPAGE")
 	port := utils.GetEnvVar("PORT")
@@ -50,15 +58,7 @@ func main() {
 	}
 
 	// Start up new subscriber client
-	pubsubhub.StartSubscriber(webpage, portInt)
-
-	// Start up discord bot
-	token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
-	dg, err := discord.StartBot(token)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer discord.StopBot(dg)
+	pubsubhub.StartSubscriber(webpage, portInt, dg)
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running. Press CTRL-C to exit.")

@@ -8,11 +8,13 @@ import (
 	"time"
 
 	"github.com/NekoFluff/gobot/data"
+	"github.com/NekoFluff/gobot/discord"
 	"github.com/NekoFluff/gobot/utils"
+	"github.com/bwmarrin/discordgo"
 	"github.com/dpup/gohubbub"
 )
 
-func StartSubscriber(webpage string, port int) {
+func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 	// Get the youtube channel feeds to subscribe to
 	channelFeeds, err := data.GetFeeds()
 	if err != nil {
@@ -43,6 +45,7 @@ func StartSubscriber(webpage string, port int) {
 						log.Println(err)
 					} else {
 						data.SaveLivestream(livestream)
+						discord.ScheduleLivestreamNotifications(dg, livestream.Url, livestream.Date)
 					}
 				}
 			}
