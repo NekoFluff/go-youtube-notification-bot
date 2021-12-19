@@ -22,10 +22,10 @@ func consume(name string, x chan int, done chan bool) {
 	}
 }
 
-var GoRoutine = &DiscordCommand{
-	Command:     "!goroutine",
-	Description: "Goroutine test",
-	Execute: func(s *discordgo.Session, m *discordgo.MessageCreate) {
+var GoRoutine = NewDiscordCommand(
+	"goroutine",
+	"Goroutine test",
+	func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		x := make(chan int)
 		done := make(chan bool)
 		start := time.Now()
@@ -46,4 +46,5 @@ var GoRoutine = &DiscordCommand{
 		duration := time.Since(start)
 
 		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Start: %v | Duration: %v", start, duration))
-	}}
+	},
+)

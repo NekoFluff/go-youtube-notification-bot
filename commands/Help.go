@@ -6,10 +6,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var Help = &DiscordCommand{
-	Command:     "!help",
-	Description: "Display all available commands!",
-	Execute: func(s *discordgo.Session, m *discordgo.MessageCreate) {
+var Help = NewDiscordCommand(
+	"help",
+	"Display all available commands!",
+	func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		embedFields := []*discordgo.MessageEmbedField{}
 
 		// Setup MessageEmbedField
@@ -37,5 +37,8 @@ var Help = &DiscordCommand{
 		}
 
 		_, err := s.ChannelMessageSendEmbed(m.ChannelID, embed)
-		log.Println(err)
-	}}
+		if err != nil {
+			log.Println(err)
+		}
+	},
+)
