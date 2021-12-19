@@ -2,6 +2,7 @@ package utils
 
 import (
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -11,7 +12,12 @@ func GetHTMLContent(url string) (html []byte, err error) {
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}()
 
 	// Reads html as a slice of bytes
 	html, err = ioutil.ReadAll(resp.Body)
