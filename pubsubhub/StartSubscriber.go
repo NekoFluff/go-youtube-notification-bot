@@ -65,7 +65,7 @@ func processFeed(dg *discordgo.Session, feed Feed) {
 			// Only send a `will livestream on` message if the time the livestream starts has changed
 			if sentMessages[livestream.Url] != livestream.Date {
 				// load PST time zone
-				loc, err := time.LoadLocation("PST") // use other time zones such as MST, IST
+				loc, err := time.LoadLocation("America/Los_Angeles")
 				if err != nil {
 					log.Println(err)
 				}
