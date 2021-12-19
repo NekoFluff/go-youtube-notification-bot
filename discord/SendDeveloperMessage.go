@@ -20,10 +20,12 @@ func SendDeveloperMessage(dg *discordgo.Session, message string) {
 		ch, err := dg.UserChannelCreate(developerId)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 		_, err = dg.ChannelMessageSend(ch.ID, message)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 	}
 }
