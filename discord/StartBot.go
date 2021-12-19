@@ -12,22 +12,22 @@ var AllCommands = []*commands.DiscordCommand{
 	commands.GoRoutine,
 }
 
-func StartBot(Token string) (dg *discordgo.Session, err error) {
+func StartBot(Token string) (s *discordgo.Session, err error) {
 	// Create a new Discord session using the provided bot token.
-	dg, err = discordgo.New("Bot " + Token)
+	s, err = discordgo.New("Bot " + Token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
 	}
 
 	// Register the messageCreate func as a callback for MessageCreate events.
-	dg.AddHandler(messageCreate)
+	s.AddHandler(messageCreate)
 
 	// In this example, we only care about receiving message events.
-	dg.Identify.Intents = discordgo.IntentsGuildMessages
+	s.Identify.Intents = discordgo.IntentsGuildMessages
 
 	// Open a websocket connection to Discord and begin listening.
-	err = dg.Open()
+	err = s.Open()
 	if err != nil {
 		fmt.Println("error opening connection,", err)
 		return

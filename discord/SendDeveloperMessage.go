@@ -8,7 +8,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func SendDeveloperMessage(dg *discordgo.Session, message string) {
+func SendDeveloperMessage(s *discordgo.Session, message string) {
 	developer_mode := os.Getenv("DEVELOPER_MODE")
 	if developer_mode != "ON" && developer_mode != "1" {
 		return
@@ -17,12 +17,12 @@ func SendDeveloperMessage(dg *discordgo.Session, message string) {
 	developerIds := getDeveloperIds()
 
 	for _, developerId := range developerIds {
-		ch, err := dg.UserChannelCreate(developerId)
+		ch, err := s.UserChannelCreate(developerId)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		_, err = dg.ChannelMessageSend(ch.ID, message)
+		_, err = s.ChannelMessageSend(ch.ID, message)
 		if err != nil {
 			fmt.Println(err)
 			return

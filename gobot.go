@@ -36,13 +36,13 @@ func main() {
 
 	// Start up discord bot
 	token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
-	dg, err := discord.StartBot(token)
+	s, err := discord.StartBot(token)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer discord.StopBot(dg)
+	defer discord.StopBot(s)
 
-	discord.SendChannelMessage(dg, "gobot", fmt.Sprintf("%s is online!", dg.State.User))
+	discord.SendChannelMessage(s, "gobot", fmt.Sprintf("%s is online!", s.State.User))
 
 	// Load environment variables for pubsubhub subscriber
 	webpage := utils.GetEnvVar("WEBPAGE")
@@ -55,7 +55,7 @@ func main() {
 	}
 
 	// Start up new subscriber client
-	pubsubhub.StartSubscriber(webpage, portInt, dg)
+	pubsubhub.StartSubscriber(webpage, portInt, s)
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running. Press CTRL-C to exit.")

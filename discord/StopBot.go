@@ -2,7 +2,7 @@ package discord
 
 import "github.com/bwmarrin/discordgo"
 
-func StopBot(dg *discordgo.Session) {
+func StopBot(s *discordgo.Session) {
 	// Cleanly close down the Discord session.
-	dg.Close()
+	s.Close()
 }

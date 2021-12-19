@@ -13,9 +13,9 @@ import (
 	"github.com/dpup/gohubbub"
 )
 
-func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
+func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 	// Reschedule all notifications from the db
-	discord.RecheduleAllLivestreamNotifications(dg)
+	discord.RecheduleAllLivestreamNotifications(s)
 
 	// Get the youtube channel feeds to subscribe to
 	channelFeeds, err := data.GetFeeds()
@@ -35,7 +35,7 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 				if r := recover(); r != nil {
 					str := fmt.Sprintf("Recovered from panic. %v", r)
 					log.Println(str)
-					discord.SendDeveloperMessage(dg, str)
+					discord.SendDeveloperMessage(s, str)
 				}
 			}()
 
@@ -45,30 +45,30 @@ func StartSubscriber(webpage string, port int, dg *discordgo.Session) {
 			if xmlError != nil {
 				errorMsg := fmt.Sprintf("XML Parse Error %v", xmlError)
 				log.Println(errorMsg)
-				discord.SendDeveloperMessage(dg, errorMsg)
+				discord.SendDeveloperMessage(s, errorMsg)
 			} else {
-				processFeed(dg, feed)
+				processFeed(s, feed)
 			}
 		})
 	}
 	client.StartAndServe("", port)
 }
 
-func processFeed(dg *discordgo.Session, feed Feed) {
-	discord.SendDeveloperMessage(dg, fmt.Sprintf("Processing feed: %#v", feed))
+func processFeed(s *discordgo.Session, feed Feed) {
+	discord.SendDeveloperMessage(s, fmt.Sprintf("Processing feed: %#v", feed))
 	for _, entry := range feed.Entries {
 		log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)
 
 		livestream, err := convertEntryToLivestream(entry)
 		if err != nil {
 			log.Println(err)
-			discord.SendDeveloperMessage(dg, fmt.Sprintf("%s it not a livestream. Error: %v", entry.Link.Href, err))
+			discord.SendDeveloperMessage(s, fmt.Sprintf("%s it not a livestream. Error: %v", entry.Link.Href, err))
 
 		} else {
 			data.SaveLivestream(livestream)
-			discord.ScheduleLivestreamNotifications(dg, livestream.Url, livestream.Date)
-			discord.SendWillLivestreamNotification(dg, livestream)
-			discord.SendDeveloperMessage(dg, fmt.Sprintf("Processed livestream: %s", livestream.Url))
+			discord.ScheduleLivestreamNotifications(s, livestream.Url, livestream.Date)
+			discord.SendWillLivestreamNotification(s, livestream)
+			discord.SendDeveloperMessage(s, fmt.Sprintf("Processed livestream: %s", livestream.Url))
 		}
 	}
 }

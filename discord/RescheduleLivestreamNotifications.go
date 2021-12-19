@@ -8,14 +8,14 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-func RecheduleAllLivestreamNotifications(dg *discordgo.Session) {
+func RecheduleAllLivestreamNotifications(s *discordgo.Session) {
 	livestreams, err := data.GetLivestreams()
 	if err != nil {
 		log.Println(err)
-		SendDeveloperMessage(dg, fmt.Sprint(err))
+		SendDeveloperMessage(s, fmt.Sprint(err))
 	}
 
 	for _, livestream := range livestreams {
-		ScheduleLivestreamNotifications(dg, livestream.Url, livestream.Date)
+		ScheduleLivestreamNotifications(s, livestream.Url, livestream.Date)
 	}
 }
