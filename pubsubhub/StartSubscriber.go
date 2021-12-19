@@ -65,9 +65,13 @@ func processFeed(s *discordgo.Session, feed Feed) {
 			discord.SendDeveloperMessage(s, fmt.Sprintf("%s it not a livestream. Error: %v", entry.Link.Href, err))
 
 		} else {
+			// We need to do this before saving the livestream so we can do some
+			// comparison checks with the time the video goes live
+			discord.SendWillLivestreamNotification(s, livestream)
+
+			// Save the livestream and set up notifications
 			data.SaveLivestream(livestream)
 			discord.ScheduleLivestreamNotifications(s, livestream.Url, livestream.Date)
-			discord.SendWillLivestreamNotification(s, livestream)
 			discord.SendDeveloperMessage(s, fmt.Sprintf("Processed livestream: %s", livestream.Url))
 		}
 	}
