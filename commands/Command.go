@@ -1,7 +1,8 @@
 package commands
 
 import (
-	"github.com/NekoFluff/gobot/utils"
+	"os"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -12,7 +13,10 @@ type DiscordCommand struct {
 }
 
 func NewDiscordCommand(command string, description string, execute func(s *discordgo.Session, m *discordgo.MessageCreate)) *DiscordCommand {
-	prefix := utils.GetEnvVar("COMMAND_PREFIX")
+	prefix := os.Getenv("COMMAND_PREFIX")
+	if prefix == "" {
+		prefix = "!"
+	}
 
 	return &DiscordCommand{
 		Command:     prefix + command,

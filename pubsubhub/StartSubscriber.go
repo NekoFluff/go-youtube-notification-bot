@@ -59,7 +59,7 @@ func processFeed(s *discordgo.Session, feed Feed) {
 	for _, entry := range feed.Entries {
 		log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)
 
-		livestream, err := convertEntryToLivestream(entry)
+		livestream, err := ConvertEntryToLivestream(entry)
 		if err != nil {
 			log.Println(err)
 			discord.SendDeveloperMessage(s, fmt.Sprintf("%s it not a livestream. Error: %v", entry.Link.Href, err))
@@ -77,8 +77,8 @@ func processFeed(s *discordgo.Session, feed Feed) {
 	}
 }
 
-func convertEntryToLivestream(entry Entry) (livestream data.Livestream, err error) {
-	livestreamUnixTime, err := getLivestreamUnixTime(entry.Link.Href)
+func ConvertEntryToLivestream(entry Entry) (livestream data.Livestream, err error) {
+	livestreamUnixTime, err := GetLivestreamUnixTime(entry.Link.Href)
 
 	if err != nil {
 		return
@@ -93,7 +93,7 @@ func convertEntryToLivestream(entry Entry) (livestream data.Livestream, err erro
 	return
 }
 
-func getLivestreamUnixTime(url string) (time.Time, error) {
+func GetLivestreamUnixTime(url string) (time.Time, error) {
 	html, err := utils.GetHTMLContent(url)
 	if err != nil {
 		return time.Now(), err
