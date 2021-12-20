@@ -49,14 +49,14 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 				log.Println(errorMsg)
 				discord.SendDeveloperMessage(s, errorMsg)
 			} else {
-				processFeed(s, feed)
+				ProcessFeed(s, feed)
 			}
 		})
 	}
 	client.StartAndServe("", port)
 }
 
-func processFeed(s *discordgo.Session, feed Feed) {
+func ProcessFeed(s *discordgo.Session, feed Feed) {
 	discord.SendDeveloperMessage(s, fmt.Sprintf("Processing feed: %#v", feed))
 	for _, entry := range feed.Entries {
 		log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)

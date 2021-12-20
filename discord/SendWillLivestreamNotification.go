@@ -12,8 +12,12 @@ import (
 func SendWillLivestreamNotification(s *discordgo.Session, livestream data.Livestream) {
 	storedLivestream, err := data.GetLivestream(livestream.Url)
 
+	dateChanged := false
+	if storedLivestream != nil {
+		dateChanged = storedLivestream.Date.Sub(livestream.Date) != time.Duration(0)
+	}
+
 	// Only send a `will livestream on` message if the time the livestream starts has changed
-	dateChanged := storedLivestream.Date.Sub(livestream.Date) != time.Duration(0)
 	if err != nil || dateChanged {
 		// load PST time zone
 		loc, err := time.LoadLocation("America/Los_Angeles")

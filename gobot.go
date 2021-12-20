@@ -19,6 +19,7 @@ import (
 // TODO: Documentation
 
 func main() {
+
 	// Start up discord bot
 	token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
 	s, err := discord.StartBot(token)
