@@ -3,6 +3,7 @@ package pubsubhub
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestGetLivestreamUnixTime(t *testing.T) {
@@ -32,8 +33,8 @@ func TestConvertEntryToLivestream(t *testing.T) {
 			Name: "author name",
 			Uri:  "uri",
 		},
-		Published: "published",
-		Updated:   "updated",
+		Published: time.Now(),
+		Updated:   time.Now(),
 	}
 
 	livestream, err := ConvertEntryToLivestream(entry)
@@ -41,13 +42,16 @@ func TestConvertEntryToLivestream(t *testing.T) {
 		t.Error(err)
 	}
 
-	if livestream.Author != "author name" {
+	if livestream.Author != entry.Author.Name {
 		t.Errorf("Author is not correct. Currently %s", livestream.Author)
 	}
-	if livestream.Url != "https://www.youtube.com/watch?v=c7K6RInG3Dw" {
+	if livestream.Url != entry.Link.Href {
 		t.Error("Url is not correct")
 	}
-	if livestream.Title != "title" {
+	if livestream.Title != entry.Title {
+		t.Error("Title is not correct")
+	}
+	if livestream.Updated != entry.Updated {
 		t.Error("Title is not correct")
 	}
 }

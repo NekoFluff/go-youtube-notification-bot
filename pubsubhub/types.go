@@ -1,6 +1,9 @@
 package pubsubhub
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+	"time"
+)
 
 type Feed struct {
 	XMLName xml.Name `xml:"feed"`
@@ -17,15 +20,15 @@ type Link struct {
 }
 
 type Entry struct {
-	XMLName   xml.Name `xml:"entry"`
-	Id        string   `xml:"id"`
-	VideoId   string   `xml:"videoId"`
-	ChannelId string   `xml:"channelId"`
-	Title     string   `xml:"title"`
-	Link      Link     `xml:"link"`
-	Author    Author   `xml:"author"`
-	Published string   `xml:"published"`
-	Updated   string   `xml:"updated"`
+	XMLName   xml.Name  `xml:"entry"`
+	Id        string    `xml:"id"`
+	VideoId   string    `xml:"videoId"`
+	ChannelId string    `xml:"channelId"`
+	Title     string    `xml:"title"`
+	Link      Link      `xml:"link"`
+	Author    Author    `xml:"author"`
+	Published time.Time `xml:"published"`
+	Updated   time.Time `xml:"updated"`
 }
 
 type Author struct {

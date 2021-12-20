@@ -1,6 +1,7 @@
 package pubsubhub
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -42,5 +43,11 @@ func TestParseXML(t *testing.T) {
 	}
 	if entry.Link.Href != "http://www.youtube.com/watch?v=VIDEO_ID" {
 		t.Errorf("Link is incorrect. Currently: %s", entry.Link)
+	}
+	if fmt.Sprint(entry.Published) != "2015-03-06 21:40:57 +0000 +0000" {
+		t.Errorf("Published date is incorrect. Currently: %s", entry.Published)
+	}
+	if fmt.Sprint(entry.Updated) != "2015-03-09 19:05:24.552394234 +0000 +0000" {
+		t.Errorf("Updated date is incorrect. Currently: %s", entry.Updated)
 	}
 }
