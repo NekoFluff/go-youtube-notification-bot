@@ -88,6 +88,7 @@ func ConvertEntryToLivestream(entry Entry) (livestream data.Livestream, err erro
 		Author: entry.Author.Name,
 		Url:    entry.Link.Href,
 		Date:   livestreamUnixTime,
+		Title:  entry.Title,
 	}
 
 	return

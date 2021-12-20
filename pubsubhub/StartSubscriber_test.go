@@ -47,4 +47,7 @@ func TestConvertEntryToLivestream(t *testing.T) {
 	if livestream.Url != "https://www.youtube.com/watch?v=c7K6RInG3Dw" {
 		t.Error("Url is not correct")
 	}
+	if livestream.Title != "title" {
+		t.Error("Title is not correct")
+	}
 }

@@ -16,4 +16,5 @@ type Livestream struct {
 	Author string    `bson:"author"`
 	Url    string    `bson:"url"`
 	Date   time.Time `bson:"date"`
+	Title  string    `bson:"title"`
 }
