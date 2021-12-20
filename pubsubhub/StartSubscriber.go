@@ -1,6 +1,7 @@
 package pubsubhub
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"runtime/debug"
@@ -80,8 +81,19 @@ func ProcessFeed(s *discordgo.Session, feed Feed) {
 }
 
 func ConvertEntryToLivestream(entry Entry) (livestream data.Livestream, err error) {
-	livestreamUnixTime, err := GetLivestreamUnixTime(entry.Link.Href)
+	maximumAttempts := 3
 
+	var livestreamUnixTime time.Time
+	for i := 0; i < maximumAttempts; i++ {
+		livestreamUnixTime, err = GetLivestreamUnixTime(entry.Link.Href)
+		if err == nil {
+			break
+		} else {
+			time.Sleep(time.Duration(5) * time.Minute)
+		}
+	}
+
+	// Failed all attempts to get the livestream unix time
 	if err != nil {
 		return
 	}
@@ -97,19 +109,26 @@ func ConvertEntryToLivestream(entry Entry) (livestream data.Livestream, err erro
 	return
 }
 
-func GetLivestreamUnixTime(url string) (time.Time, error) {
+func GetLivestreamUnixTime(url string) (t time.Time, err error) {
 	html, err := utils.GetHTMLContent(url)
 	if err != nil {
-		return time.Now(), err
+		return
 	}
 	params := utils.GetParams(`(?:"scheduledStartTime":")(?P<timestamp>\d+)`, string(html))
 	// fmt.Printf("%s\n", params)
 
 	// Translate port string into int
-	timestamp, err := strconv.ParseInt(params["timestamp"], 10, 64)
-	if err != nil {
-		return time.Now(), err
+	if timestampStr, ok := params["timestamp"]; ok {
+		var timestampInt int64
+		timestampInt, err = strconv.ParseInt(timestampStr, 10, 64)
+		if err != nil {
+			return
+		}
+		t = time.Unix(timestampInt, 0)
+	} else {
+		err = errors.New("no timestamp found")
+		return
 	}
 
-	return time.Unix(timestamp, 0), nil
+	return
 }
