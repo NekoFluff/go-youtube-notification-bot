@@ -16,8 +16,6 @@ func SaveLivestream(livestream Livestream) *mongo.UpdateResult {
 	client := GetClient()
 	defer DisconnectClient(client)
 
-	fmt.Println("Successfully connected and pinged.")
-
 	collection := client.Database("hololive-en").Collection("scheduledLivestreams")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)

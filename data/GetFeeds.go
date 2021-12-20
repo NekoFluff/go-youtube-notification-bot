@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -10,8 +9,6 @@ import (
 func GetFeeds() ([]ChannelFeed, error) {
 	client := GetClient()
 	defer DisconnectClient(client)
-
-	fmt.Println("Successfully connected and pinged.")
 
 	collection := client.Database("hololive-en").Collection("feeds")
 	cur, err := collection.Find(context.Background(), bson.D{})
