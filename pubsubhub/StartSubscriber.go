@@ -3,6 +3,7 @@ package pubsubhub
 import (
 	"fmt"
 	"log"
+	"runtime/debug"
 	"strconv"
 	"time"
 
@@ -33,6 +34,7 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 			// Handle unexpected panics by sending a developer message in discord
 			defer func() {
 				if r := recover(); r != nil {
+					debug.PrintStack()
 					str := fmt.Sprintf("Recovered from panic. %v", r)
 					log.Println(str)
 					discord.SendDeveloperMessage(s, str)
