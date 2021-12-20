@@ -21,9 +21,5 @@ func GetHTMLContent(url string) (html []byte, err error) {
 
 	// Reads html as a slice of bytes
 	html, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-
 	return
 }
