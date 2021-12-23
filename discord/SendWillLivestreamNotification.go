@@ -29,6 +29,6 @@ func SendWillLivestreamNotification(s *discordgo.Session, livestream data.Livest
 		// e.g. [Flare Ch. 不知火フレア] Livestream on Mon, 02 Jan 2006 15:04:05 PST
 		message := fmt.Sprintf("%s will livestream on [%s] - [%s]", livestream.Author, livestream.Date.In(loc).Format(time.RFC1123), livestream.Url)
 		log.Println(message)
-		SendChannelMessage(s, "gobot", message)
+		SendChannelMessage(s, "hololive-notifications", message)
 	}
 }
