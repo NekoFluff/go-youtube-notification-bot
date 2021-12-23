@@ -4,7 +4,7 @@ Sends notifications when livestreams from hololive are about to begin. (15 minut
 
 Requires a server text room with the name `gobot` and `gobot-live`
 
-Bot link: <a>TBD</a>
+Bot link: <a>https://discord.com/api/oauth2/authorize?client_id=920909355254169631&permissions=395137247312&scope=bot</a>
 
 ## Using the project?
 
