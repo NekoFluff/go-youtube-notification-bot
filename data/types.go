@@ -24,3 +24,8 @@ type Subscription struct {
 	User         string `bson:"user"`
 	Subscription string `bson:"subscription"`
 }
+
+type SubscriptionGroup struct {
+	User  string `bson:"_id"`
+	Count int    `bson:"count"`
+}
