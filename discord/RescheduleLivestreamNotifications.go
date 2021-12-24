@@ -16,6 +16,6 @@ func RecheduleAllLivestreamNotifications(s *discordgo.Session) {
 	}
 
 	for _, livestream := range livestreams {
-		ScheduleLivestreamNotifications(s, livestream.Url, livestream.Date)
+		ScheduleLivestreamNotifications(s, livestream, livestream.Date)
 	}
 }

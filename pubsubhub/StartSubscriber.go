@@ -74,7 +74,7 @@ func ProcessFeed(s *discordgo.Session, feed Feed) {
 
 			// Save the livestream and set up notifications
 			data.SaveLivestream(livestream)
-			discord.ScheduleLivestreamNotifications(s, livestream.Url, livestream.Date)
+			discord.ScheduleLivestreamNotifications(s, livestream, livestream.Date)
 			discord.SendDeveloperMessage(s, fmt.Sprintf("Processed livestream: %s", livestream.Url))
 		}
 	}

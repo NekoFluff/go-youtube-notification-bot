@@ -19,3 +19,8 @@ type Livestream struct {
 	Title   string    `bson:"title"`
 	Updated time.Time `bson:"updated"`
 }
+
+type Subscription struct {
+	User         string `bson:"user"`
+	Subscription string `bson:"subscription"`
+}
