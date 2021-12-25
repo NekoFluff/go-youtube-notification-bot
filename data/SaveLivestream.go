@@ -30,6 +30,6 @@ func SaveLivestream(livestream Livestream) *mongo.UpdateResult {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Update Result: %#v", result)
+	fmt.Printf("Update Result: %#v\n", result)
 	return result
 }

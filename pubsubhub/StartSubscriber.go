@@ -28,7 +28,7 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 	client := gohubbub.NewClient(webpage, "YT Notifier")
 
 	for _, channelFeed := range channelFeeds {
-		fmt.Printf("%#v", channelFeed)
+		fmt.Printf("%#v\n", channelFeed)
 
 		topicURL := channelFeed.TopicURL
 		client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
@@ -60,7 +60,7 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 func ProcessFeed(s *discordgo.Session, feed Feed) {
 	discord.SendDeveloperMessage(s, fmt.Sprintf("Processing feed: %#v", feed))
 	for _, entry := range feed.Entries {
-		log.Printf("%s - %s (%s)", entry.Title, entry.Author.Name, entry.Link)
+		log.Printf("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link)
 
 		livestream, err := ConvertEntryToLivestream(entry)
 		if err != nil {

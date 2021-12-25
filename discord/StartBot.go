@@ -2,6 +2,7 @@ package discord
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/NekoFluff/gobot/commands"
 	"github.com/bwmarrin/discordgo"
@@ -41,12 +42,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	// Help command has to be separated from all commands to prevent cyclic behavior
-	if m.Content == commands.Help.Command {
+	cmd := strings.Split(strings.ToLower(m.Content), " ")[0]
+	if cmd == commands.Help.Command {
 		commands.Help.Execute(s, m)
 	}
 
 	for _, c := range commands.AllCommands {
-		if m.Content == c.Command {
+		if cmd == c.Command {
 			c.Execute(s, m)
 		}
 	}

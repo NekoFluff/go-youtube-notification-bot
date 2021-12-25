@@ -16,7 +16,7 @@ func SaveSubscription(subscription Subscription) *mongo.UpdateResult {
 	client := GetClient()
 	defer DisconnectClient(client)
 
-	collection := client.Database("hololive-en").Collection("scheduledLivestreams")
+	collection := client.Database("hololive-en").Collection("subscriptions")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
@@ -30,6 +30,6 @@ func SaveSubscription(subscription Subscription) *mongo.UpdateResult {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Update Result: %#v", result)
+	fmt.Printf("Update Result: %#v\n", result)
 	return result
 }

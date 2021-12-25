@@ -15,7 +15,7 @@ func DeleteSubscription(subscription Subscription) *mongo.DeleteResult {
 	client := GetClient()
 	defer DisconnectClient(client)
 
-	collection := client.Database("hololive-en").Collection("scheduledLivestreams")
+	collection := client.Database("hololive-en").Collection("subscriptions")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
@@ -27,6 +27,6 @@ func DeleteSubscription(subscription Subscription) *mongo.DeleteResult {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Delete Result: %#v", result)
+	fmt.Printf("Delete Result: %#v\n", result)
 	return result
 }
