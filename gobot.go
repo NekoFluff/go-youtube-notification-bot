@@ -5,9 +5,11 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
 	"github.com/NekoFluff/gobot/discord"
+	"github.com/NekoFluff/gobot/pubsubhub"
 	"github.com/NekoFluff/gobot/utils"
 )
 
@@ -27,18 +29,18 @@ func main() {
 
 	discord.SendChannelMessage(s, "hololive-notifications", fmt.Sprintf("%s is online!", s.State.User))
 
-	// // Load environment variables for pubsubhub subscriber
-	// webpage := utils.GetEnvVar("WEBPAGE")
-	// port := utils.GetEnvVar("PORT")
+	// Load environment variables for pubsubhub subscriber
+	webpage := utils.GetEnvVar("WEBPAGE")
+	port := utils.GetEnvVar("PORT")
 
-	// // Translate port string into int
-	// portInt, err := strconv.Atoi(port)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	// Translate port string into int
+	portInt, err := strconv.Atoi(port)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// // Start up new subscriber client
-	// pubsubhub.StartSubscriber(webpage, portInt, s)
+	// Start up new subscriber client
+	pubsubhub.StartSubscriber(webpage, portInt, s)
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running. Press CTRL-C to exit.")
