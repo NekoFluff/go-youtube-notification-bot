@@ -20,10 +20,10 @@ func ScheduleLivestreamNotifications(s *discordgo.Session, livestream data.Lives
 	if fifteenMinCronJobs[url] != nil {
 		fifteenMinCronJobs[url].Stop()
 	}
-	fifteenMinCronJobs[url] = ScheduleNotification(s, t.Add(time.Duration(-15)*time.Minute), "hololive-notifications", fmt.Sprintf("Livestream starting in 15 minutes! %s", url), authors)
+	fifteenMinCronJobs[url] = ScheduleNotification(s, t.Add(time.Duration(-15)*time.Minute), "hololive-notifications", fmt.Sprintf("[%s] Livestream starting in 15 minutes! %s", livestream.Author, url), authors)
 
 	if liveCronJobs[url] != nil {
 		liveCronJobs[url].Stop()
 	}
-	liveCronJobs[url] = ScheduleNotification(s, t, "hololive-stream-started", fmt.Sprintf("Livestream starting! %s", url), authors)
+	liveCronJobs[url] = ScheduleNotification(s, t, "hololive-stream-started", fmt.Sprintf("[%s] Livestream starting! %s", livestream.Author, url), authors)
 }
