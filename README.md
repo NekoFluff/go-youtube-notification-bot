@@ -1,3 +1,5 @@
+[![Go](https://github.com/NekoFluff/go-youtube-notification-bot/actions/workflows/go.yml/badge.svg)](https://github.com/NekoFluff/go-youtube-notification-bot/actions/workflows/go.yml)
+
 # Hololive Livestream Notification Bot
 
 Sends notifications when livestreams from hololive are about to begin. (15 minutes prior and on time)
