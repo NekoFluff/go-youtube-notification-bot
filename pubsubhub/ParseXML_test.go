@@ -1,11 +1,13 @@
 package pubsubhub
 
 import (
-	"fmt"
+	"os"
 	"testing"
 )
 
 func TestParseXML(t *testing.T) {
+	os.Setenv("TZ", "UTC+1")
+
 	body := `<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns="http://www.w3.org/2005/Atom">
   <link rel="hub" href="https://pubsubhubbub.appspot.com" />
   <link rel="alex" href="wtf" />
@@ -44,10 +46,16 @@ func TestParseXML(t *testing.T) {
 	if entry.Link.Href != "http://www.youtube.com/watch?v=VIDEO_ID" {
 		t.Errorf("Link is incorrect. Currently: %s", entry.Link)
 	}
-	if fmt.Sprint(entry.Published) != "2015-03-06 21:40:57 +0000 +0000" {
-		t.Errorf("Published date is incorrect. Currently: %s", entry.Published)
+
+	currentPublishedDt := entry.Published.Format("2006-01-02 15:04:05 -0700")
+	expectedPublishedDT := "2015-03-06 21:40:57 +0000"
+	if currentPublishedDt != expectedPublishedDT {
+		t.Errorf("Published date is incorrect. Currently: %s. Expected %s.", currentPublishedDt, expectedPublishedDT)
 	}
-	if fmt.Sprint(entry.Updated) != "2015-03-09 19:05:24.552394234 +0000 +0000" {
-		t.Errorf("Updated date is incorrect. Currently: %s", entry.Updated)
+
+	currentUpdatedDT := entry.Updated.Format("2006-01-02 15:04:05 -0700")
+	expectedUpdatedDT := "2015-03-09 19:05:24 +0000"
+	if currentUpdatedDT != expectedUpdatedDT {
+		t.Errorf("Updated date is incorrect. Currently: %s. Expected: %s.", currentUpdatedDT, expectedUpdatedDT)
 	}
 }
