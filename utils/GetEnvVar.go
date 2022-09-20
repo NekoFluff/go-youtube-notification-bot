@@ -11,7 +11,10 @@ import (
 
 func init() {
 	// Load the .env file in the current directory
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		log.Printf("Failed to load the .env file %s\n", err)
+	}
 }
 
 func GetEnvVar(name string) string {

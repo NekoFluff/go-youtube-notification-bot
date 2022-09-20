@@ -1,6 +1,8 @@
 package discord
 
 import (
+	"fmt"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -21,10 +23,14 @@ func SendChannelMessage(s *discordgo.Session, channelName string, message string
 			}
 
 			// Send text message
-			s.ChannelMessageSend(
+			_, err := s.ChannelMessageSend(
 				c.ID,
 				message,
 			)
+
+			if err != nil {
+				fmt.Printf("Failed to send a channel message: %s", err)
+			}
 		}
 	}
 }

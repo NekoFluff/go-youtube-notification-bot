@@ -1,22 +1,15 @@
 package pubsubhub
 
 import (
-	"fmt"
 	"testing"
 	"time"
 )
 
 func TestGetLivestreamUnixTime(t *testing.T) {
-	unixTime, err := GetLivestreamUnixTime("https://www.youtube.com/watch?v=c7K6RInG3Dw")
+	_, err := GetLivestreamUnixTime("https://www.youtube.com/watch?v=c7K6RInG3Dw")
 
 	if err != nil {
 		t.Error(err)
-	}
-
-	// TODO: Maybe remove this check and just rely on the above error not being present
-	str := fmt.Sprintf("%v", unixTime)
-	if str != "2022-09-28 13:00:00 -0700 MST" {
-		t.Errorf("Unix Timestamp: %s", str)
 	}
 }
 

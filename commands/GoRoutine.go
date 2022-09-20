@@ -45,6 +45,10 @@ var GoRoutine = NewDiscordCommand(
 
 		duration := time.Since(start)
 
-		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Start: %v | Duration: %v", start, duration))
+		_, err := s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Start: %v | Duration: %v", start, duration))
+
+		if err != nil {
+			fmt.Printf("Failed to send channel message: %s", err)
+		}
 	},
 )

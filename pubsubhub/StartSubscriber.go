@@ -31,7 +31,7 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 		fmt.Printf("%#v\n", channelFeed)
 
 		topicURL := channelFeed.TopicURL
-		client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
+		err = client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
 			// Handle unexpected panics by sending a developer message in discord
 			defer func() {
 				if r := recover(); r != nil {
@@ -53,6 +53,10 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 				ProcessFeed(s, feed)
 			}
 		})
+
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	client.StartAndServe("", port)
 }
