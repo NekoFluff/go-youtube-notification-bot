@@ -6,6 +6,12 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var AllCommands = []*DiscordCommand{
+	// GoRoutine,
+	Subscribe,
+	Unsubscribe,
+}
+
 type DiscordCommand struct {
 	Command     string
 	Description string
