@@ -10,7 +10,7 @@ import (
 )
 
 func Unsubscribe() discord.Command {
-	command := "stats"
+	command := "unsubscribe"
 
 	return discord.Command{
 		Command: discordgo.ApplicationCommand{

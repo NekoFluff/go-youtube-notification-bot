@@ -10,7 +10,7 @@ import (
 )
 
 func Subscribe() discord.Command {
-	command := "stats"
+	command := "subscribe"
 
 	return discord.Command{
 		Command: discordgo.ApplicationCommand{
