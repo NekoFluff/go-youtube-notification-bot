@@ -5,11 +5,11 @@ import (
 	"log"
 	"time"
 
-	"github.com/NekoFluff/gobot/data"
-	"github.com/bwmarrin/discordgo"
+	"github.com/NekoFluff/discord"
+	"github.com/NekoFluff/go-hololive-notification-bot/data"
 )
 
-func SendWillLivestreamNotification(s *discordgo.Session, livestream data.Livestream) {
+func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream) {
 	storedLivestream, err := data.GetLivestream(livestream.Url)
 
 	dateChanged := false
@@ -23,12 +23,12 @@ func SendWillLivestreamNotification(s *discordgo.Session, livestream data.Livest
 		loc, err := time.LoadLocation("America/Los_Angeles")
 		if err != nil {
 			log.Println(err)
-			SendDeveloperMessage(s, fmt.Sprint(err))
+			bot.SendDeveloperMessage(fmt.Sprint(err))
 		}
 
 		// e.g. [Flare Ch. 不知火フレア] Livestream on Mon, 02 Jan 2006 15:04:05 PST
 		message := fmt.Sprintf("%s will livestream on [%s] - [%s]", livestream.Author, livestream.Date.In(loc).Format(time.RFC1123), livestream.Url)
 		log.Println(message)
-		SendChannelMessage(s, "hololive-notifications", message)
+		bot.SendChannelMessage("hololive-notifications", message)
 	}
 }

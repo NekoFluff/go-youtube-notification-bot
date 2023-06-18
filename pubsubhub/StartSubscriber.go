@@ -8,16 +8,16 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/NekoFluff/gobot/data"
-	"github.com/NekoFluff/gobot/discord"
-	"github.com/NekoFluff/gobot/utils"
-	"github.com/bwmarrin/discordgo"
+	mydiscord "github.com/NekoFluff/discord"
+	"github.com/NekoFluff/go-hololive-notification-bot/data"
+	"github.com/NekoFluff/go-hololive-notification-bot/discord"
+	"github.com/NekoFluff/go-hololive-notification-bot/utils"
 	"github.com/dpup/gohubbub"
 )
 
-func StartSubscriber(webpage string, port int, s *discordgo.Session) {
+func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 	// Reschedule all notifications from the db
-	discord.RecheduleAllLivestreamNotifications(s)
+	discord.RecheduleAllLivestreamNotifications(bot)
 
 	// Get the youtube channel feeds to subscribe to
 	channelFeeds, err := data.GetFeeds()
@@ -38,7 +38,7 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 					debug.PrintStack()
 					str := fmt.Sprintf("Recovered from panic. %v", r)
 					log.Println(str)
-					discord.SendDeveloperMessage(s, str)
+					bot.SendDeveloperMessage(str)
 				}
 			}()
 
@@ -48,9 +48,9 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 			if xmlError != nil {
 				errorMsg := fmt.Sprintf("XML Parse Error %v", xmlError)
 				log.Println(errorMsg)
-				discord.SendDeveloperMessage(s, errorMsg)
+				bot.SendDeveloperMessage(errorMsg)
 			} else {
-				ProcessFeed(s, feed)
+				ProcessFeed(bot, feed)
 			}
 		})
 
@@ -61,25 +61,25 @@ func StartSubscriber(webpage string, port int, s *discordgo.Session) {
 	client.StartAndServe("", port)
 }
 
-func ProcessFeed(s *discordgo.Session, feed Feed) {
-	discord.SendDeveloperMessage(s, fmt.Sprintf("Processing feed: %#v", feed))
+func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
+	bot.SendDeveloperMessage(fmt.Sprintf("Processing feed: %#v", feed))
 	for _, entry := range feed.Entries {
 		log.Printf("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link)
 
 		livestream, err := ConvertEntryToLivestream(entry)
 		if err != nil {
 			log.Println(err)
-			discord.SendDeveloperMessage(s, fmt.Sprintf("%s is not a livestream. Error: %v", entry.Link.Href, err))
+			bot.SendDeveloperMessage(fmt.Sprintf("%s is not a livestream. Error: %v", entry.Link.Href, err))
 
 		} else {
 			// We need to do this before saving the livestream so we can do some
 			// comparison checks with the time the video goes live
-			discord.SendWillLivestreamNotification(s, livestream)
+			discord.SendWillLivestreamNotification(bot, livestream)
 
 			// Save the livestream and set up notifications
 			data.SaveLivestream(livestream)
-			discord.ScheduleLivestreamNotifications(s, livestream, livestream.Date)
-			discord.SendDeveloperMessage(s, fmt.Sprintf("Processed livestream: %s", livestream.Url))
+			discord.ScheduleLivestreamNotifications(bot, livestream, livestream.Date)
+			bot.SendDeveloperMessage(fmt.Sprintf("Processed livestream: %s", livestream.Url))
 		}
 	}
 }

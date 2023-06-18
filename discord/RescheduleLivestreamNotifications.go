@@ -4,18 +4,18 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/NekoFluff/gobot/data"
-	"github.com/bwmarrin/discordgo"
+	"github.com/NekoFluff/discord"
+	"github.com/NekoFluff/go-hololive-notification-bot/data"
 )
 
-func RecheduleAllLivestreamNotifications(s *discordgo.Session) {
+func RecheduleAllLivestreamNotifications(bot *discord.Bot) {
 	livestreams, err := data.GetLivestreams()
 	if err != nil {
 		log.Println(err)
-		SendDeveloperMessage(s, fmt.Sprint(err))
+		bot.SendDeveloperMessage(fmt.Sprint(err))
 	}
 
 	for _, livestream := range livestreams {
-		ScheduleLivestreamNotifications(s, livestream, livestream.Date)
+		ScheduleLivestreamNotifications(bot, livestream, livestream.Date)
 	}
 }

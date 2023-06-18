@@ -8,26 +8,22 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/NekoFluff/gobot/discord"
-	"github.com/NekoFluff/gobot/pubsubhub"
-	"github.com/NekoFluff/gobot/utils"
+	"github.com/NekoFluff/discord"
+	"github.com/NekoFluff/go-hololive-notification-bot/commands"
+	"github.com/NekoFluff/go-hololive-notification-bot/pubsubhub"
+	"github.com/NekoFluff/go-hololive-notification-bot/utils"
 )
 
 // TODO: Tests
-// TODO: Save and load subscriptions
-// TODO: Subscription commnad (cmmands package)
 // TODO: Documentation
 
 func main() {
 	// Start up discord bot
 	token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
-	s, err := discord.StartBot(token)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer discord.StopBot(s)
+	bot := discord.NewBot(token)
+	defer bot.Stop()
 
-	discord.SendChannelMessage(s, "hololive-notifications", fmt.Sprintf("%s is online!", s.State.User))
+	bot.SendChannelMessage("hololive-notifications", fmt.Sprintf("%s is online!", bot.Session.State.User))
 
 	// Load environment variables for pubsubhub subscriber
 	webpage := utils.GetEnvVar("WEBPAGE")
@@ -40,7 +36,15 @@ func main() {
 	}
 
 	// Start up new subscriber client
-	pubsubhub.StartSubscriber(webpage, portInt, s)
+	pubsubhub.StartSubscriber(webpage, portInt, bot)
+
+	// Generate Commands
+	bot.AddCommands(
+		commands.Ping(),
+		commands.Subscribe(),
+		commands.Unsubscribe(),
+	)
+	bot.RegisterCommands()
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running. Press CTRL-C to exit.")

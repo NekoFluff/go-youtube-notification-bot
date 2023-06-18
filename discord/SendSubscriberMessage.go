@@ -3,26 +3,26 @@ package discord
 import (
 	"fmt"
 
-	"github.com/NekoFluff/gobot/data"
-	"github.com/bwmarrin/discordgo"
+	"github.com/NekoFluff/discord"
+	"github.com/NekoFluff/go-hololive-notification-bot/data"
 )
 
-func SendSubscriberMessage(s *discordgo.Session, authors []string, message string) {
+func SendSubscriberMessage(bot *discord.Bot, authors []string, message string) {
 	subscriptions, err := data.GetSubscriptions(authors)
 
 	if err != nil {
-		SendDeveloperMessage(s, fmt.Sprintf("Unable to retrieve subscribers: %s", err))
+		bot.SendDeveloperMessage(fmt.Sprintf("Unable to retrieve subscribers: %s", err))
 		return
 	}
 
 	for _, subscription := range subscriptions {
-		ch, err := s.UserChannelCreate(subscription.User)
+		ch, err := bot.Session.UserChannelCreate(subscription.User)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		_, err = s.ChannelMessageSend(ch.ID, message)
+		_, err = bot.Session.ChannelMessageSend(ch.ID, message)
 		if err != nil {
 			fmt.Println(err)
 			return

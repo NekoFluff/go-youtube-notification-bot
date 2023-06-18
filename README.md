@@ -4,7 +4,7 @@
 
 Sends notifications when livestreams from hololive are about to begin. (15 minutes prior and on time)
 
-Requires a server text room with the name `gobot` and `gobot-live`
+Requires a server text room with the name `go-hololive-notification-bot` and `go-hololive-notification-bot-live`
 
 Bot link: <a>https://discord.com/api/oauth2/authorize?client_id=920909355254169631&permissions=395137247312&scope=bot</a>
 
@@ -19,19 +19,19 @@ I hosted my bot on Heroku. Here's a dev guide on setting it up: https://devcente
 ### Set up environment variables / config vars
 
 ```
-PORT=port# (only set if running on local machine for testing)
+PORT=# port (only set if running on local machine for testing)
 
-COMMAND_PREFIX=command prefix
+COMMAND_PREFIX=# command prefix
 
-DISCORD_BOT_TOKEN=really long discord bot token
+DISCORD_BOT_TOKEN=# discord bot token
 
-DEVELOPER_IDS=your discord id so you can get DMs from the bot about processing feeds
+DEVELOPER_IDS=# your discord id so you can get DMs from the bot about processing feeds
 
-DEVELOPER_MODE=ON (enables the DMs that help debug issues)
+DEVELOPER_MODE=# ON (enables the DMs that help debug issues)
 
-WEBPAGE=the heroku webpage (e.g. your-gobot-app.herokuapp.com)
+WEBPAGE=# the heroku webpage (e.g. your-go-hololive-notification-bot-app.herokuapp.com)
 
-MONGO_CONNECTION_URI=connection uri to a mongodb instance. can be obtained from the mongo atlas page
+MONGO_CONNECTION_URI=# connection uri to a mongodb instance. can be obtained from the mongo atlas page
 ```
 
 ### Set up MongoDB Database and Collections
