@@ -25,6 +25,14 @@ func main() {
 
 	bot.SendChannelMessage("hololive-notifications", fmt.Sprintf("%s is online!", bot.Session.State.User))
 
+	// Generate Commands
+	bot.AddCommands(
+		commands.Ping(),
+		commands.Subscribe(),
+		commands.Unsubscribe(),
+	)
+	bot.RegisterCommands()
+
 	// Load environment variables for pubsubhub subscriber
 	webpage := utils.GetEnvVar("WEBPAGE")
 	port := utils.GetEnvVar("PORT")
@@ -37,14 +45,6 @@ func main() {
 
 	// Start up new subscriber client
 	pubsubhub.StartSubscriber(webpage, portInt, bot)
-
-	// Generate Commands
-	bot.AddCommands(
-		commands.Ping(),
-		commands.Subscribe(),
-		commands.Unsubscribe(),
-	)
-	bot.RegisterCommands()
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running. Press CTRL-C to exit.")
