@@ -28,8 +28,7 @@ func main() {
 	// Generate Commands
 	bot.AddCommands(
 		commands.Ping(),
-		commands.Subscribe(),
-		commands.Unsubscribe(),
+		commands.Subscription(),
 	)
 	bot.RegisterCommands()
 
