@@ -106,11 +106,31 @@ func Subscription() discord.Command {
 					return
 				}
 
+				// Check if we have any subscriptions
+				if (len(subscriptions)) == 0 {
+					err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+						Type: discordgo.InteractionResponseChannelMessageWithSource,
+						Data: &discordgo.InteractionResponseData{
+							Content: "You have no subscriptions",
+						},
+					})
+					if err != nil {
+						log.Println(err)
+					}
+					return
+				}
+
+				// Get all creators
 				creators := make([]string, len(subscriptions))
 				for i, sub := range subscriptions {
 					creators[i] = sub.Subscription
 				}
-				creatorsString := fmt.Sprintf("Subscribed to: `%v`", creators)
+
+				// Join creators with a comma
+				creatorsString := fmt.Sprintf("Your subscriptions: `%s`", creators[0])
+				for _, creator := range creators[1:] {
+					creatorsString += fmt.Sprintf(", `%s`", creator)
+				}
 
 				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
