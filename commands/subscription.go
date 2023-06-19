@@ -64,7 +64,7 @@ func Subscription() discord.Command {
 				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
-						Content: fmt.Sprintf("Subscribed to %v", creator),
+						Content: fmt.Sprintf("Subscribed to `%v`", creator),
 					},
 				})
 				if err != nil {
@@ -82,7 +82,7 @@ func Subscription() discord.Command {
 				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
-						Content: fmt.Sprintf("Removed subscriptions from %s", creator),
+						Content: fmt.Sprintf("Removed `%s` subscriptions", creator),
 					},
 				})
 				if err != nil {
@@ -110,7 +110,7 @@ func Subscription() discord.Command {
 				for i, sub := range subscriptions {
 					creators[i] = sub.Subscription
 				}
-				creatorsString := fmt.Sprintf("Subscribed to: %v", creators)
+				creatorsString := fmt.Sprintf("Subscribed to: `%v`", creators)
 
 				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
