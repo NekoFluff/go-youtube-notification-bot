@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/NekoFluff/discord"
@@ -22,6 +23,10 @@ func main() {
 	token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
 	bot := discord.NewBot(token)
 	defer bot.Stop()
+
+	if utils.GetEnvVar("DEVELOPER_MODE") == "ON" {
+		bot.DeveloperIDs = strings.Split(utils.GetEnvVar("DEVELOPER_IDS"), ",")
+	}
 
 	bot.SendChannelMessage("hololive-notifications", fmt.Sprintf("%s is online!", bot.Session.State.User))
 
