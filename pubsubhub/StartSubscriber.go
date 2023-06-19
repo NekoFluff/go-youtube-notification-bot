@@ -1,6 +1,7 @@
 package pubsubhub
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -62,7 +63,12 @@ func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 }
 
 func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
-	bot.SendDeveloperMessage(fmt.Sprintf("Processing feed: %#v", feed))
+	j, err := json.MarshalIndent(feed, "", "  ")
+	if err != nil {
+		log.Println("Failed to marshal indent feed", err)
+	} else {
+		bot.SendDeveloperMessage(fmt.Sprintf("Processing feed:\n```%s```", string(j)))
+	}
 	for _, entry := range feed.Entries {
 		log.Printf("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link)
 
