@@ -67,7 +67,7 @@ func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 	if err != nil {
 		log.Println("Failed to marshal indent feed", err)
 	} else {
-		bot.SendDeveloperMessage(fmt.Sprintf("Processing feed:\n```%s```", string(j)))
+		bot.SendDeveloperMessage(fmt.Sprintf("Processing feed:\n```json\n%s```", string(j)))
 	}
 	for _, entry := range feed.Entries {
 		log.Printf("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link)
