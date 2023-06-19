@@ -61,7 +61,12 @@ func Subscription() discord.Command {
 				}
 				data.SaveSubscription(subscription)
 
-				_, err := s.ChannelMessageSend(i.ChannelID, fmt.Sprintf("Subscribed to %v", creator))
+				err := s.InteractionRespond(i, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: fmt.Sprintf("Subscribed to %v", creator),
+					},
+				})
 				if err != nil {
 					log.Println(err)
 				}
@@ -74,17 +79,32 @@ func Subscription() discord.Command {
 				}
 				data.DeleteSubscription(subscription)
 
-				_, err := s.ChannelMessageSend(i.ChannelID, fmt.Sprintf("Removed subscriptions from %s", creator))
+				err := s.InteractionRespond(i, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: fmt.Sprintf("Removed subscriptions from %s", creator),
+					},
+				})
 				if err != nil {
 					log.Println(err)
 				}
 			} else if list := optionMap["list"]; list != nil {
-				_, err := s.ChannelMessageSend(i.ChannelID, "Not implemented yet")
+				err := s.InteractionRespond(i, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "Not implemented yet",
+					},
+				})
 				if err != nil {
 					log.Println(err)
 				}
 			} else {
-				_, err := s.ChannelMessageSend(i.ChannelID, "Unknown subcommand provided")
+				err := s.InteractionRespond(i, &discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Content: "Unknown subcommand provided",
+					},
+				})
 				if err != nil {
 					log.Println(err)
 				}

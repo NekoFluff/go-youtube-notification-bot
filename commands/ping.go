@@ -16,7 +16,12 @@ func Ping() discord.Command {
 			Description: "Is the bot online?",
 		},
 		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-			err := respondToInteraction(s, i.Interaction, "Pong!")
+			err := s.InteractionRespond(i, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Pong!",
+				},
+			})
 			if err != nil {
 				log.Println("An error occurred while pinging the server")
 				log.Println(err)
