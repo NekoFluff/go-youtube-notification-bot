@@ -28,7 +28,7 @@ func main() {
 		bot.DeveloperIDs = strings.Split(utils.GetEnvVar("DEVELOPER_IDS"), ",")
 	}
 
-	bot.SendChannelMessage("hololive-notifications", fmt.Sprintf("%s is online!", bot.Session.State.User))
+	bot.SendDeveloperMessage(fmt.Sprintf("%s is online!", bot.Session.State.User))
 
 	// Generate Commands
 	bot.AddCommands(
