@@ -52,11 +52,16 @@ func Subscription() discord.Command {
 				optionMap[opt.Name] = opt
 			}
 
+			user := i.Interaction.User
+			if i.Interaction.Member != nil {
+				user = i.Interaction.Member.User
+			}
+
 			if add := optionMap["add"]; add != nil {
 				creator := add.Options[0].StringValue()
 
 				subscription := data.Subscription{
-					User:         i.Interaction.Member.User.ID,
+					User:         user.ID,
 					Subscription: creator,
 				}
 				data.SaveSubscription(subscription)
@@ -74,7 +79,7 @@ func Subscription() discord.Command {
 				creator := remove.Options[0].StringValue()
 
 				subscription := data.Subscription{
-					User:         i.Interaction.Member.User.ID,
+					User:         user.ID,
 					Subscription: creator,
 				}
 				data.DeleteSubscription(subscription)
@@ -89,7 +94,7 @@ func Subscription() discord.Command {
 					log.Println(err)
 				}
 			} else if list := optionMap["list"]; list != nil {
-				subscriptions, err := data.GetSubscriptionsForUser(i.Interaction.Member.User.ID)
+				subscriptions, err := data.GetSubscriptionsForUser(user.ID)
 
 				if err != nil {
 					log.Println(err)
