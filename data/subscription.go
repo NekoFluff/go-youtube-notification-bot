@@ -34,6 +34,29 @@ func GetSubscriptions(authors []string) ([]SubscriptionGroup, error) {
 	return results, nil
 }
 
+func GetSubscriptionsForUser(user string) ([]Subscription, error) {
+	client := GetClient()
+	defer DisconnectClient(client)
+
+	subscriptions := client.Database("hololive-en").Collection("subscriptions")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	filter := bson.D{primitive.E{Key: "user", Value: user}}
+
+	cur, err := subscriptions.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	var results []Subscription
+	if err = cur.All(context.Background(), &results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
 func DeleteSubscription(subscription Subscription) *mongo.DeleteResult {
 	client := GetClient()
 	defer DisconnectClient(client)

@@ -89,10 +89,33 @@ func Subscription() discord.Command {
 					log.Println(err)
 				}
 			} else if list := optionMap["list"]; list != nil {
-				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				subscriptions, err := data.GetSubscriptionsForUser(i.Interaction.Member.User.ID)
+
+				if err != nil {
+					log.Println(err)
+
+					err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+						Type: discordgo.InteractionResponseChannelMessageWithSource,
+						Data: &discordgo.InteractionResponseData{
+							Content: "Failed to get your subscriptions",
+						},
+					})
+					if err != nil {
+						log.Println(err)
+					}
+					return
+				}
+
+				creators := make([]string, len(subscriptions))
+				for i, sub := range subscriptions {
+					creators[i] = sub.Subscription
+				}
+				creatorsString := fmt.Sprintf("Subscribed to: %v", creators)
+
+				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
-						Content: "Not implemented yet",
+						Content: creatorsString,
 					},
 				})
 				if err != nil {
