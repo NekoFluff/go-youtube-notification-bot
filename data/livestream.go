@@ -3,7 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
 
 func GetLivestream(url string) (*Livestream, error) {
 	client := GetClient()
@@ -60,7 +59,8 @@ func SaveLivestream(livestream Livestream) *mongo.UpdateResult {
 	result, err := collection.UpdateOne(ctx, filter, update, options)
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to save livestream", "error", err)
+		return nil
 	}
 
 	fmt.Printf("Update Result: %#v\n", result)

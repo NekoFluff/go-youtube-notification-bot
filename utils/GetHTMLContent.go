@@ -2,7 +2,7 @@ package utils
 
 import (
 	"io/ioutil"
-	"log"
+	"log/slog"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ func GetHTMLContent(url string) (html []byte, err error) {
 	defer func() {
 		err := resp.Body.Close()
 		if err != nil {
-			log.Println(err)
+			slog.Error("Failed to close response body", "error", err)
 		}
 	}()
 

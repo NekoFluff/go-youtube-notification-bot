@@ -2,7 +2,7 @@ package discord
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 
 	"github.com/NekoFluff/discord"
 	"github.com/NekoFluff/go-hololive-notification-bot/data"
@@ -11,7 +11,8 @@ import (
 func RecheduleAllLivestreamNotifications(bot *discord.Bot) {
 	livestreams, err := data.GetLivestreams()
 	if err != nil {
-		log.Println(err)
+		slog.Error("Failed to reschedule all livestream notifications", "error", err)
+
 		bot.SendDeveloperMessage(fmt.Sprint(err))
 	}
 

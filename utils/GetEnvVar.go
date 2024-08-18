@@ -1,8 +1,7 @@
 package utils
 
 import (
-	"fmt"
-	"log"
+	"log/slog"
 	"os"
 	"runtime/debug"
 
@@ -13,7 +12,7 @@ func init() {
 	// Load the .env file in the current directory
 	err := godotenv.Load()
 	if err != nil {
-		log.Printf("Failed to load the .env file %s\n", err)
+		slog.Error("Error loading .env file", "error", err)
 	}
 }
 
@@ -21,7 +20,7 @@ func GetEnvVar(name string) string {
 	envVar := os.Getenv(name)
 	if envVar == "" {
 		debug.PrintStack()
-		log.Fatal(fmt.Sprintf("$%v must be set", name))
+		slog.Error("Environment variable not set", "envVar", name)
 	}
 	return envVar
 }

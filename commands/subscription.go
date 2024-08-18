@@ -2,7 +2,8 @@ package commands
 
 import (
 	"fmt"
-	"log"
+
+	"log/slog"
 
 	"github.com/NekoFluff/discord"
 	"github.com/NekoFluff/go-hololive-notification-bot/data"
@@ -73,7 +74,7 @@ func Subscription() discord.Command {
 					},
 				})
 				if err != nil {
-					log.Println(err)
+					slog.Error("Failed to respond to interaction", "error", err)
 				}
 			} else if remove := optionMap["remove"]; remove != nil {
 				creator := remove.Options[0].StringValue()
@@ -91,13 +92,13 @@ func Subscription() discord.Command {
 					},
 				})
 				if err != nil {
-					log.Println(err)
+					slog.Error("Failed to respond to interaction", "error", err)
 				}
 			} else if list := optionMap["list"]; list != nil {
 				subscriptions, err := data.GetSubscriptionsForUser(user.ID)
 
 				if err != nil {
-					log.Println(err)
+					slog.Error("Failed to get subscription for the user", "error", err, "user", user.ID)
 
 					err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 						Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -106,7 +107,7 @@ func Subscription() discord.Command {
 						},
 					})
 					if err != nil {
-						log.Println(err)
+						slog.Error("Failed to respond to interaction", "error", err)
 					}
 					return
 				}
@@ -120,7 +121,7 @@ func Subscription() discord.Command {
 						},
 					})
 					if err != nil {
-						log.Println(err)
+						slog.Error("Failed to respond to interaction", "error", err)
 					}
 					return
 				}
@@ -144,7 +145,7 @@ func Subscription() discord.Command {
 					},
 				})
 				if err != nil {
-					log.Println(err)
+					slog.Error("Failed to respond to interaction", "error", err)
 				}
 			} else {
 				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -154,7 +155,7 @@ func Subscription() discord.Command {
 					},
 				})
 				if err != nil {
-					log.Println(err)
+					slog.Error("Failed to respond to interaction", "error", err)
 				}
 			}
 		},

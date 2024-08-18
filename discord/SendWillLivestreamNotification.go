@@ -2,7 +2,7 @@ package discord
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/NekoFluff/discord"
@@ -22,13 +22,14 @@ func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream
 		// load PST time zone
 		loc, err := time.LoadLocation("America/Los_Angeles")
 		if err != nil {
-			log.Println(err)
+			slog.Error("Fail to load America/Los_Angeles location", "error", err)
+
 			bot.SendDeveloperMessage(fmt.Sprint(err))
 		}
 
 		// e.g. [Flare Ch. 不知火フレア] Livestream on Mon, 02 Jan 2006 15:04:05 PST
 		message := fmt.Sprintf("%s will livestream on [%s] - [%s]", livestream.Author, livestream.Date.In(loc).Format(time.RFC1123), livestream.Url)
-		log.Println(message)
+		slog.Info(message)
 		bot.SendChannelMessage("hololive-notifications", message)
 	}
 }

@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"log"
+	"log/slog"
 
 	"github.com/NekoFluff/discord"
 	"github.com/bwmarrin/discordgo"
@@ -23,8 +23,7 @@ func Ping() discord.Command {
 				},
 			})
 			if err != nil {
-				log.Println("An error occurred while pinging the server")
-				log.Println(err)
+				slog.Error("An error occurred while pinging the server", "error", err)
 			}
 		},
 	}

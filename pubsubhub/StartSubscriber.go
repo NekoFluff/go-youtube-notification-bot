@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
+	"log/slog"
 	"runtime/debug"
 	"strconv"
 	"time"
@@ -23,7 +23,9 @@ func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 	// Get the youtube channel feeds to subscribe to
 	channelFeeds, err := data.GetFeeds()
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to get feeds to subscribe to", "error", err)
+
+		panic(err)
 	}
 
 	client := gohubbub.NewClient(webpage, "YT Notifier")
@@ -38,7 +40,7 @@ func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 				if r := recover(); r != nil {
 					debug.PrintStack()
 					str := fmt.Sprintf("Recovered from panic. %v", r)
-					log.Println(str)
+					slog.Info(str)
 					bot.SendDeveloperMessage(str)
 				}
 			}()
@@ -48,7 +50,7 @@ func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 
 			if xmlError != nil {
 				errorMsg := fmt.Sprintf("XML Parse Error %v", xmlError)
-				log.Println(errorMsg)
+				slog.Error(errorMsg)
 				bot.SendDeveloperMessage(errorMsg)
 			} else {
 				ProcessFeed(bot, feed)
@@ -56,7 +58,7 @@ func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 		})
 
 		if err != nil {
-			log.Println(err)
+			slog.Error("Failed to subscribe to feed", "error", err)
 		}
 	}
 	client.StartAndServe("", port)
@@ -65,16 +67,16 @@ func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 	j, err := json.MarshalIndent(feed, "", "  ")
 	if err != nil {
-		log.Println("Failed to marshal indent feed", err)
+		slog.Error("Failed to marshal indent feed", "error", err)
 	} else {
 		bot.SendDeveloperMessage(fmt.Sprintf("Processing feed:\n```json\n%s```", string(j)))
 	}
 	for _, entry := range feed.Entries {
-		log.Printf("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link)
+		slog.Info("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link)
 
 		livestream, err := ConvertEntryToLivestream(entry)
 		if err != nil {
-			log.Println(err)
+			slog.Error("Failed to convert the feed data into a Livestream object", "error", err)
 			bot.SendDeveloperMessage(fmt.Sprintf("%s is not a livestream. Error: %v", entry.Link.Href, err))
 
 		} else {

@@ -3,7 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -70,7 +70,8 @@ func DeleteSubscription(subscription Subscription) *mongo.DeleteResult {
 	result, err := collection.DeleteOne(ctx, filter)
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to delete subscription", "error", err)
+		return nil
 	}
 
 	fmt.Printf("Delete Result: %#v\n", result)
@@ -92,7 +93,7 @@ func SaveSubscription(subscription Subscription) *mongo.UpdateResult {
 	result, err := collection.UpdateOne(ctx, filter, update, options)
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("Failed to save subscription", "error", err)
 	}
 
 	fmt.Printf("Update Result: %#v\n", result)
