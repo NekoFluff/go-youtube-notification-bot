@@ -6,7 +6,7 @@ go 1.23
 // replace github.com/NekoFluff/discord => ../discord
 
 require (
-	github.com/NekoFluff/discord v1.1.1
+	github.com/NekoFluff/discord v1.4.0
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/dpup/gohubbub v0.0.0-20140517235056-2dc6969d22d8
 	github.com/joho/godotenv v1.5.1
@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
