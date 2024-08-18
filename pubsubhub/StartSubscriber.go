@@ -31,8 +31,6 @@ func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
 	client := gohubbub.NewClient(webpage, "YT Notifier")
 
 	for _, channelFeed := range channelFeeds {
-		fmt.Printf("%#v\n", channelFeed)
-
 		topicURL := channelFeed.TopicURL
 		err = client.DiscoverAndSubscribe(topicURL, func(contentType string, body []byte) {
 			// Handle unexpected panics by sending a developer message in discord
