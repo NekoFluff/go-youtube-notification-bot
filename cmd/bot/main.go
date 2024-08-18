@@ -10,9 +10,9 @@ import (
 	"syscall"
 
 	"github.com/NekoFluff/discord"
-	"github.com/NekoFluff/go-hololive-notification-bot/commands"
-	"github.com/NekoFluff/go-hololive-notification-bot/pubsubhub"
-	"github.com/NekoFluff/go-hololive-notification-bot/utils"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/commands"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/pubsubhub"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/utils"
 )
 
 // TODO: Tests

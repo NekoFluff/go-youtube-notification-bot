@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/NekoFluff/discord"
-	"github.com/NekoFluff/go-hololive-notification-bot/utils"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/utils"
 	"github.com/robfig/cron"
 )
 

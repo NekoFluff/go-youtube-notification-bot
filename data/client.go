@@ -3,7 +3,7 @@ package data
 import (
 	"context"
 
-	"github.com/NekoFluff/go-hololive-notification-bot/utils"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

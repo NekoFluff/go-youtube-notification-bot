@@ -1,19 +1,23 @@
 package pubsubhub
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
+	"regexp"
 	"runtime/debug"
 	"strconv"
 	"time"
 
 	mydiscord "github.com/NekoFluff/discord"
-	"github.com/NekoFluff/go-hololive-notification-bot/data"
-	"github.com/NekoFluff/go-hololive-notification-bot/discord"
-	"github.com/NekoFluff/go-hololive-notification-bot/utils"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/data"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/discord"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/utils"
 	"github.com/dpup/gohubbub"
+	"google.golang.org/api/option"
+	"google.golang.org/api/youtube/v3"
 )
 
 func StartSubscriber(webpage string, port int, bot *mydiscord.Bot) {
@@ -70,7 +74,7 @@ func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 		bot.SendDeveloperMessage(fmt.Sprintf("Processing feed:\n```json\n%s```", string(j)))
 	}
 	for _, entry := range feed.Entries {
-		slog.Info("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link)
+		slog.Info(fmt.Sprintf("%s - %s (%s)\n", entry.Title, entry.Author.Name, entry.Link))
 
 		livestream, err := ConvertEntryToLivestream(entry)
 		if err != nil {
@@ -120,6 +124,62 @@ func ConvertEntryToLivestream(entry Entry) (livestream data.Livestream, err erro
 }
 
 func GetLivestreamUnixTime(url string) (t time.Time, err error) {
+	svc, err := youtube.NewService(context.Background(), option.WithAPIKey(utils.GetEnvVar("YOUTUBE_API_KEY")))
+	if err != nil {
+		slog.Error("Failed to create youtube service", "error", err)
+		return
+	}
+
+	// Usage:
+	videoID, err := GetVideoID(url)
+	if err != nil {
+		slog.Error("Failed to get video ID", "error", err)
+		return
+	}
+
+	call := svc.Videos.List([]string{"liveStreamingDetails"}).Id(videoID)
+	response, err := call.Do()
+
+	if err != nil {
+		slog.Error("Failed to get video details", "error", err)
+		return
+	}
+
+	if len(response.Items) == 0 {
+		slog.Error("No video details found")
+		return
+	}
+
+	if response.Items[0].LiveStreamingDetails == nil {
+		err = errors.New("video is not a livestream")
+		return time.Unix(0, 0), err
+	}
+
+	if response.Items[0].LiveStreamingDetails.ScheduledStartTime == "" {
+		err = errors.New("video is not scheduled")
+		return time.Unix(0, 0), err
+	}
+
+	t, err = time.Parse(time.RFC3339, response.Items[0].LiveStreamingDetails.ScheduledStartTime)
+	if err != nil {
+		slog.Error("Failed to parse scheduled start time", "error", err)
+		return
+	}
+
+	return t, nil
+}
+
+func GetVideoID(url string) (string, error) {
+	videoIDRegex := `\?v=(.*)`
+	re := regexp.MustCompile(videoIDRegex)
+	match := re.FindStringSubmatch(url)
+	if len(match) < 2 {
+		return "", errors.New("failed to parse video ID from URL")
+	}
+	return match[1], nil
+}
+
+func OldGetLivestreamUnixTime(url string) (t time.Time, err error) {
 	html, err := utils.GetHTMLContent(url)
 	if err != nil {
 		return

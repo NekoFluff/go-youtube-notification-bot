@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/NekoFluff/discord"
-	"github.com/NekoFluff/go-hololive-notification-bot/data"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/data"
 )
 
 func SendSubscriberMessage(bot *discord.Bot, authors []string, message string) {

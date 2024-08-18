@@ -5,7 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/NekoFluff/discord"
-	"github.com/NekoFluff/go-hololive-notification-bot/data"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/data"
 )
 
 func RecheduleAllLivestreamNotifications(bot *discord.Bot) {
