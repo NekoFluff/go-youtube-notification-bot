@@ -18,6 +18,8 @@ I hosted my bot on Heroku. Here's a dev guide on setting it up: https://devcente
 
 ### Set up environment variables / config vars
 
+Copy .env.example to .env and fill in the values.
+
 ```
 PORT=# port (only set if running on local machine for testing)
 
@@ -42,6 +44,7 @@ You will need to create a hololive-en database. Contained inside are three colle
 The only documents you will need to manually generate is in the `feeds` collection. Each document should describe the vtuber being tracked.
 
 Example:
+
 ```
 {
     "firstName": "gawr",
