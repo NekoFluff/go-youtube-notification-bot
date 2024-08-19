@@ -95,17 +95,7 @@ func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 }
 
 func ConvertEntryToLivestream(entry Entry) (livestream data.Livestream, err error) {
-	maximumAttempts := 1
-
-	var livestreamUnixTime time.Time
-	for i := 0; i < maximumAttempts; i++ {
-		livestreamUnixTime, err = GetLivestreamUnixTime(entry.Link.Href)
-		if err == nil {
-			break
-		} else {
-			time.Sleep(time.Duration(5) * time.Minute)
-		}
-	}
+	livestreamUnixTime, err := GetLivestreamUnixTime(entry.Link.Href)
 
 	// Failed all attempts to get the livestream unix time
 	if err != nil {
