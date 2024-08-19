@@ -95,7 +95,7 @@ func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 }
 
 func ConvertEntryToLivestream(entry Entry) (livestream data.Livestream, err error) {
-	maximumAttempts := 3
+	maximumAttempts := 1
 
 	var livestreamUnixTime time.Time
 	for i := 0; i < maximumAttempts; i++ {
