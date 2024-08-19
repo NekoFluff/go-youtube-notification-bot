@@ -151,13 +151,13 @@ func GetLivestreamUnixTime(url string) (t time.Time, err error) {
 	}
 
 	if response.Items[0].LiveStreamingDetails == nil {
-		err = errors.New("video is not a livestream")
-		return time.Unix(0, 0), err
+		err = errors.New("no live streaming details found for the video")
+		return
 	}
 
 	if response.Items[0].LiveStreamingDetails.ScheduledStartTime == "" {
 		err = errors.New("video is not scheduled")
-		return time.Unix(0, 0), err
+		return
 	}
 
 	t, err = time.Parse(time.RFC3339, response.Items[0].LiveStreamingDetails.ScheduledStartTime)
