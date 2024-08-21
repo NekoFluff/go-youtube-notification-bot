@@ -231,14 +231,9 @@ func subscribeToTwitchWebhook(bot *discord.Bot) {
 func handleStreamOnlineEventType(subscription map[string]interface{}, bot *discord.Bot) {
 	slog.Info("Stream online event", "subscription", subscription)
 
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
-	bot.SendDeveloperMessage("@crazyfluff Nao is live on Twitch!")
+	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
+	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
+	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
+	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
+	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
 }
