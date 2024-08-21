@@ -59,9 +59,8 @@ func main() {
 	setupTwitchCallbackEndpoint(bot)
 
 	// Start up new subscriber client
-	pubsubhub.StartSubscriber(webpage, portInt, bot)
+	go pubsubhub.StartSubscriber(webpage, portInt, bot)
 
-	// Subscribe to Twitch webhook
 	subscribeToTwitchWebhook(bot)
 
 	// Wait here until CTRL-C or other term signal is received.
