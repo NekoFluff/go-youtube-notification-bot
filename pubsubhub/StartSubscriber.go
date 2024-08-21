@@ -82,6 +82,11 @@ func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 			bot.SendDeveloperMessage(fmt.Sprintf("%s is not a livestream. Error: %v", entry.Link.Href, err))
 
 		} else {
+			if livestream.Date.Before(time.Now()) {
+				bot.SendDeveloperMessage(fmt.Sprintf("Livestream %s has already start or has ended", livestream.Url))
+				continue
+			}
+
 			// We need to do this before saving the livestream so we can do some
 			// comparison checks with the time the video goes live
 			discord.SendWillLivestreamNotification(bot, livestream)
