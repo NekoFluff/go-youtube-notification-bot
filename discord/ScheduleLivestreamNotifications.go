@@ -25,5 +25,5 @@ func ScheduleLivestreamNotifications(bot *discord.Bot, livestream data.Livestrea
 	if liveCronJobs[url] != nil {
 		liveCronJobs[url].Stop()
 	}
-	liveCronJobs[url] = ScheduleNotification(bot, t, "hololive-stream-started", fmt.Sprintf("[%s] Livestream starting!\n\n%s", livestream.Author, url), authors)
+	liveCronJobs[url] = ScheduleNotification(bot, t, "hololive-stream-started", fmt.Sprintf("[%s] Livestream starting! %s", livestream.Author, url), authors)
 }
