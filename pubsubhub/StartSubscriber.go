@@ -83,7 +83,7 @@ func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 
 		} else {
 			if livestream.Date.Before(time.Now()) {
-				bot.SendDeveloperMessage(fmt.Sprintf("Livestream %s has already start or has ended", livestream.Url))
+				bot.SendDeveloperMessage(fmt.Sprintf("Livestream %s has already started or has ended", livestream.Url))
 				continue
 			}
 
