@@ -7,8 +7,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/NekoFluff/discord"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/commands"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/pubsubhub"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/twitch"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/utils"
 	"github.com/urfave/cli/v2"
 )
 
@@ -78,6 +81,34 @@ func main() {
 							fmt.Println("Unix Timestamp:", ts.Unix())
 							phoenixTime := ts.In(time.FixedZone("Phoenix", -7*60*60))
 							fmt.Println("Phoenix Time:", phoenixTime.Format("2006-01-02 03:04:05 PM"))
+
+							return nil
+						},
+					},
+				},
+			},
+			{
+				Name:    "commands",
+				Aliases: []string{"cmd", "cmds"},
+				Usage:   "command related actions",
+				Subcommands: []*cli.Command{
+					{
+						Name:     "refresh",
+						Usage:    "refresh the Discord bot commands",
+						Category: "Commands",
+						Action: func(cCtx *cli.Context) error {
+							slog.Info("Refreshing Discord bot commands")
+
+							token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
+							bot := discord.NewBot(token)
+							defer bot.Stop()
+
+							bot.AddCommands(
+								commands.Ping(),
+								commands.Subscription(),
+							)
+							bot.RegisterCommands()
+							slog.Info("Refreshed Discord bot commands")
 
 							return nil
 						},
