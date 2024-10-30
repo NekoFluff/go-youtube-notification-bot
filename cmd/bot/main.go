@@ -231,10 +231,22 @@ func subscribeToTwitchWebhook(bot *discord.Bot) {
 func handleStreamOnlineEventType(subscription map[string]interface{}, bot *discord.Bot) {
 	slog.Info("Stream online event", "subscription", subscription)
 
-	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
-	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
-	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
-	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
-	bot.SendDeveloperMessage(fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS")))
-	bot.SendDeveloperMessage("https://www.twitch.tv/hoshinonaori")
+	message := fmt.Sprintf("<@%s> Nao is live on Twitch!", utils.GetEnvVar("DEVELOPER_IDS"))
+
+	ch, err := bot.Session.UserChannelCreate("142090800279453696")
+	if err != nil {
+		slog.Error("Failed to create DM channel", "error", err)
+		return
+	}
+	_, err = bot.Session.ChannelMessageSend(ch.ID, message)
+	if err != nil {
+		slog.Error("Failed to send message", "error", err, "channel", ch.ID)
+		return
+	}
+
+	_, err = bot.Session.ChannelMessageSend(ch.ID, "https://www.twitch.tv/hoshinonaori")
+	if err != nil {
+		slog.Error("Failed to send message", "error", err, "channel", ch.ID)
+		return
+	}
 }

@@ -31,8 +31,7 @@ func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream
 			bot.SendDeveloperMessage(fmt.Sprint(err))
 		}
 
-		// e.g. [Flare Ch. 不知火フレア] Livestream on Mon, 02 Jan 2006 15:04:05 PST
-		message := fmt.Sprintf("%s livestream @<t:%d> %s", livestream.Author, livestream.Date.In(loc).Unix(), livestream.Url)
+		message := fmt.Sprintf("%s livestream @<t:%d:F> <t:%d:R>\n%s", livestream.Author, livestream.Date.In(loc).Unix(), livestream.Url)
 		slog.Info(message)
 		bot.SendChannelMessage("hololive-notifications", message)
 	}
