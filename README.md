@@ -23,8 +23,6 @@ Copy .env.example to .env and fill in the values.
 ```
 PORT=# port (only set if running on local machine for testing)
 
-COMMAND_PREFIX=# command prefix
-
 DISCORD_BOT_TOKEN=# discord bot token
 
 DEVELOPER_IDS=# your discord id so you can get DMs from the bot about processing feeds
