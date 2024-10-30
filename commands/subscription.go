@@ -29,7 +29,7 @@ func Subscription() discord.Command {
 			Options: []*discordgo.ApplicationCommandOption{
 				{
 					Name:        "add",
-					Description: "Subscribe to get DMs when a livestream goes live!",
+					Description: "Subscribe to get DMs when a livestream goes live! (matches by first or last name)",
 					Type:        discordgo.ApplicationCommandOptionSubCommand,
 					Options:     creatorCommandOption,
 				},
@@ -88,7 +88,7 @@ func Subscription() discord.Command {
 				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
-						Content: fmt.Sprintf("Removed `%s` subscriptions", creator),
+						Content: fmt.Sprintf("Removed `%s` subscription", creator),
 					},
 				})
 				if err != nil {
