@@ -8,7 +8,6 @@ import (
 	"log/slog"
 	"regexp"
 	"runtime/debug"
-	"strconv"
 	"time"
 
 	mydiscord "github.com/NekoFluff/discord"
@@ -172,28 +171,4 @@ func GetVideoID(url string) (string, error) {
 		return "", errors.New("failed to parse video ID from URL")
 	}
 	return match[1], nil
-}
-
-func OldGetLivestreamUnixTime(url string) (t time.Time, err error) {
-	html, err := utils.GetHTMLContent(url)
-	if err != nil {
-		return
-	}
-	params := utils.GetParams(`(?:"scheduledStartTime":")(?P<timestamp>\d+)`, string(html))
-	// fmt.Printf("%s\n", params)
-
-	// Translate port string into int
-	if timestampStr, ok := params["timestamp"]; ok {
-		var timestampInt int64
-		timestampInt, err = strconv.ParseInt(timestampStr, 10, 64)
-		if err != nil {
-			return
-		}
-		t = time.Unix(timestampInt, 0)
-	} else {
-		err = errors.New("no timestamp found")
-		return
-	}
-
-	return
 }
