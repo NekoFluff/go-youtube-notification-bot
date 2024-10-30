@@ -31,7 +31,8 @@ func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream
 			bot.SendDeveloperMessage(fmt.Sprint(err))
 		}
 
-		message := fmt.Sprintf("%s livestream @<t:%d:F> <t:%d:R>\n%s", livestream.Author, livestream.Date.In(loc).Unix(), livestream.Url)
+		ts := livestream.Date.In(loc).Unix()
+		message := fmt.Sprintf("%s livestream @<t:%d:F> <t:%d:R>\n%s", livestream.Author, ts, ts, livestream.Url)
 		slog.Info(message)
 		bot.SendChannelMessage("hololive-notifications", message)
 	}
