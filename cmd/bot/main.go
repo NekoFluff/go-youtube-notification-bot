@@ -41,6 +41,7 @@ func main() {
 
 	// Generate Commands
 	bot.AddCommands(
+		commands.Help(),
 		commands.Ping(),
 		commands.Subscription(),
 	)
