@@ -12,7 +12,7 @@ import (
 )
 
 func Subscription() discord.Command {
-	command := "subscription2"
+	command := "subscription"
 
 	vtuberCommandOption := []*discordgo.ApplicationCommandOption{
 		{
