@@ -23,7 +23,7 @@ func main() {
 			{
 				Name:    "twitch",
 				Aliases: []string{"tw"},
-				Usage:   "options for twitch",
+				Usage:   "twitch related commands",
 				Subcommands: []*cli.Command{
 					{
 						Name:     "users",
@@ -65,7 +65,7 @@ func main() {
 			{
 				Name:    "youtube",
 				Aliases: []string{"yt"},
-				Usage:   "options for youtube",
+				Usage:   "youtube related commands",
 				Subcommands: []*cli.Command{
 					{
 						Name:     "timestamp",
@@ -92,7 +92,7 @@ func main() {
 			{
 				Name:    "commands",
 				Aliases: []string{"cmd", "cmds"},
-				Usage:   "command related actions",
+				Usage:   "manage discord bot commands",
 				Subcommands: []*cli.Command{
 					{
 						Name:     "refresh",
@@ -136,9 +136,14 @@ func main() {
 				},
 			},
 			{
-				Name:  "notify",
-				Usage: "notification related actions",
+				Name:      "notify",
+				Usage:     "test subscriber notifications",
+				ArgsUsage: "<vtuber_name> <message>",
 				Action: func(cCtx *cli.Context) error {
+					if cCtx.NArg() != 2 {
+						return fmt.Errorf("<vtuber_name> and <message> arguments required")
+					}
+
 					token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
 					bot := discord.NewBot(token)
 					defer bot.Stop()
