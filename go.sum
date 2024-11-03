@@ -27,6 +27,10 @@ github.com/NekoFluff/discord v1.7.0 h1:zN3TZpOT5AtdiJXE5gLYX29JJXpTa8mX+VQdQfmdJ
 github.com/NekoFluff/discord v1.7.0/go.mod h1:CD3LKMhPWykBy1KOjaBMiyv+D86Bl/eA6WBUYIh8rso=
 github.com/NekoFluff/discord v1.9.0 h1:AdG21mAKetoB4md3PuhZUaM/pkxcYgtqYWLgMPwKzPQ=
 github.com/NekoFluff/discord v1.9.0/go.mod h1:CD3LKMhPWykBy1KOjaBMiyv+D86Bl/eA6WBUYIh8rso=
+github.com/NekoFluff/discord v1.10.0 h1:jaV/M3OD0nf6SllJe0rtT4F9HWp8gVneR9foOXB24rE=
+github.com/NekoFluff/discord v1.10.0/go.mod h1:CD3LKMhPWykBy1KOjaBMiyv+D86Bl/eA6WBUYIh8rso=
+github.com/NekoFluff/discord v1.10.1 h1:NGDy/mz+aFe4RR9v01inXgqMOLzvwj7xMBCU+M5ROLY=
+github.com/NekoFluff/discord v1.10.1/go.mod h1:CD3LKMhPWykBy1KOjaBMiyv+D86Bl/eA6WBUYIh8rso=
 github.com/bwmarrin/discordgo v0.28.1 h1:gXsuo2GBO7NbR6uqmrrBDplPUx2T3nzu775q/Rd1aG4=
 github.com/bwmarrin/discordgo v0.28.1/go.mod h1:NJZpH+1AfhIcyQsPeuBKsUtYrRnjkyu0kIVMCHkZtRY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=

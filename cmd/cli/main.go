@@ -105,12 +105,30 @@ func main() {
 							bot := discord.NewBot(token)
 							defer bot.Stop()
 
+							bot.ClearCommands(os.Getenv("DISCORD_GUILD_ID"))
 							bot.AddCommands(
 								commands.Ping(),
 								commands.Subscription(),
 							)
 							bot.RegisterCommands(os.Getenv("DISCORD_GUILD_ID"))
 							slog.Info("Refreshed Discord bot commands")
+
+							return nil
+						},
+					},
+					{
+						Name:     "clear",
+						Usage:    "clear the Discord bot commands",
+						Category: "Commands",
+						Action: func(cCtx *cli.Context) error {
+							slog.Info("Clearing Discord bot commands")
+
+							token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
+							bot := discord.NewBot(token)
+							defer bot.Stop()
+
+							bot.ClearCommands(os.Getenv("DISCORD_GUILD_ID"))
+							slog.Info("Cleared Discord bot commands")
 
 							return nil
 						},
