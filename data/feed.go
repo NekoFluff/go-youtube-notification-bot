@@ -72,7 +72,7 @@ func GetFeedsByName(name string, limit int) ([]ChannelFeed, error) {
 	return results, nil
 }
 
-func GetFeedsForUserBySubscription(user string) ([]ChannelFeed, error) {
+func GetFeedsForUser(user string) ([]ChannelFeed, error) {
 	client := GetClient()
 	defer DisconnectClient(client)
 
@@ -95,15 +95,6 @@ func GetFeedsForUserBySubscription(user string) ([]ChannelFeed, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// var data []interface{}
-	// if err = cur.All(context.Background(), &data); err != nil {
-	// 	return nil, err
-	// }
-	// if err != nil {
-	// 	slog.Error("Failed to get feeds for user", "user", user, "error", err)
-	// }
-	// slog.Info("Got feeds for user", "user", user, "feeds", data)
 
 	var results []ChannelFeed
 	if err = cur.All(context.Background(), &results); err != nil {

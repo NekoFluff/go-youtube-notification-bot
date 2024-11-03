@@ -111,7 +111,7 @@ func Subscription() discord.Command {
 					}
 				}
 			} else if list := optionMap["list"]; list != nil {
-				feeds, err := data.GetFeedsForUserBySubscription(user.ID)
+				feeds, err := data.GetFeedsForUser(user.ID)
 
 				if err != nil {
 					slog.Error("Failed to get subscription for the user", "error", err, "user", user.ID)
