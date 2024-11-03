@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"log/slog"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -72,7 +73,7 @@ func GetFeedsByName(name string, limit int) ([]ChannelFeed, error) {
 	return results, nil
 }
 
-func GetFeedsForUser(user string) ([]ChannelFeed, error) {
+func GetFeedsForUser(user string, name string) ([]ChannelFeed, error) {
 	client := GetClient()
 	defer DisconnectClient(client)
 
@@ -88,7 +89,24 @@ func GetFeedsForUser(user string) ([]ChannelFeed, error) {
 			{Key: "as", Value: "feedDetails"},
 		}}},
 		{{Key: "$unwind", Value: "$feedDetails"}},
-		{{Key: "$replaceRoot", Value: bson.D{{Key: "newRoot", Value: "$feedDetails"}}}},
+	}
+
+	if name != "" {
+		regexPattern := bson.D{{Key: "$regex", Value: name}, {Key: "$options", Value: "i"}}
+
+		// Use $or to match either first name or last name
+		pipeline = append(pipeline, bson.D{{Key: "$match", Value: bson.D{{Key: "$or", Value: bson.A{
+			bson.D{{Key: "feedDetails.firstName", Value: regexPattern}},
+			bson.D{{Key: "feedDetails.lastName", Value: regexPattern}},
+		}}}}})
+
+		slog.Info("Using pipeline", "pipeline", pipeline)
+	}
+
+	pipeline = append(pipeline, bson.D{{Key: "$replaceRoot", Value: bson.D{{Key: "newRoot", Value: "$feedDetails"}}}})
+
+	if name != "" {
+		pipeline = append(pipeline, bson.D{{Key: "$limit", Value: 20}})
 	}
 
 	cur, err := subscriptions.Aggregate(context.Background(), pipeline)
