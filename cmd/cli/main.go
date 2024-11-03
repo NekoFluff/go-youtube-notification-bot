@@ -13,6 +13,8 @@ import (
 	"github.com/NekoFluff/hololive-livestream-notifier-go/twitch"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/utils"
 	"github.com/urfave/cli/v2"
+
+	internalDiscord "github.com/NekoFluff/hololive-livestream-notifier-go/discord"
 )
 
 func main() {
@@ -107,12 +109,32 @@ func main() {
 								commands.Ping(),
 								commands.Subscription(),
 							)
-							bot.RegisterCommands()
+							bot.RegisterCommands(os.Getenv("DISCORD_GUILD_ID"))
 							slog.Info("Refreshed Discord bot commands")
 
 							return nil
 						},
 					},
+				},
+			},
+			{
+				Name:  "notify",
+				Usage: "notification related actions",
+				Action: func(cCtx *cli.Context) error {
+					token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
+					bot := discord.NewBot(token)
+					defer bot.Stop()
+
+					bot.AddCommands(
+						commands.Ping(),
+						commands.Subscription(),
+					)
+					bot.RegisterCommands(os.Getenv("DISCORD_GUILD_ID"))
+
+					args := cCtx.Args()
+					internalDiscord.SendSubscriberMessage(bot, []string{args.Get(0)}, args.Get(1))
+
+					return nil
 				},
 			},
 		},

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -16,12 +15,18 @@ func GetSubscriptions(authors []string) ([]SubscriptionGroup, error) {
 	client := GetClient()
 	defer DisconnectClient(client)
 
-	subscriptions := client.Database("hololive-en").Collection("subscriptions")
+	feeds := client.Database("hololive-en").Collection("feeds")
 
-	matchStage := bson.D{primitive.E{Key: "$match", Value: bson.D{primitive.E{Key: "subscription", Value: bson.D{primitive.E{Key: "$in", Value: authors}}}}}}
-	groupStage := bson.D{primitive.E{Key: "$group", Value: bson.D{primitive.E{Key: "_id", Value: "$user"}, primitive.E{Key: "count", Value: bson.D{primitive.E{Key: "$sum", Value: 1}}}}}}
+	matchStage := bson.D{{Key: "$match", Value: bson.D{{Key: "$or", Value: bson.A{
+		bson.D{{Key: "firstName", Value: bson.D{{Key: "$in", Value: authors}}}},
+		bson.D{{Key: "lastName", Value: bson.D{{Key: "$in", Value: authors}}}},
+	}}}}}
+	lookupStage := bson.D{{Key: "$lookup", Value: bson.D{{Key: "from", Value: "subscriptions"}, {Key: "localField", Value: "_id"}, {Key: "foreignField", Value: "feedID"}, {Key: "as", Value: "subscriptions"}}}}
+	unwindStage := bson.D{{Key: "$unwind", Value: bson.D{{Key: "path", Value: "$subscriptions"}}}}
+	replaceStage := bson.D{{Key: "$replaceRoot", Value: bson.D{{Key: "newRoot", Value: "$subscriptions"}}}}
+	groupStage := bson.D{{Key: "$group", Value: bson.D{{Key: "_id", Value: "$user"}, {Key: "count", Value: bson.D{{Key: "$sum", Value: 1}}}}}}
 
-	cur, err := subscriptions.Aggregate(context.Background(), mongo.Pipeline{matchStage, groupStage})
+	cur, err := feeds.Aggregate(context.Background(), mongo.Pipeline{matchStage, lookupStage, unwindStage, replaceStage, groupStage})
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +47,7 @@ func GetSubscriptionsForUser(user string) ([]Subscription, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	filter := bson.D{primitive.E{Key: "user", Value: user}}
+	filter := bson.D{{Key: "user", Value: user}}
 
 	cur, err := subscriptions.Find(ctx, filter)
 	if err != nil {
@@ -65,7 +70,7 @@ func DeleteSubscription(subscription Subscription) *mongo.DeleteResult {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	filter := bson.D{primitive.E{Key: "user", Value: subscription.User}, primitive.E{Key: "subscription", Value: subscription.Subscription}}
+	filter := bson.D{{Key: "user", Value: subscription.User}, {Key: "feedID", Value: subscription.FeedID}}
 
 	result, err := collection.DeleteOne(ctx, filter)
 
@@ -87,8 +92,8 @@ func SaveSubscription(subscription Subscription) *mongo.UpdateResult {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 	options := options.Update().SetUpsert(true)
-	filter := bson.D{primitive.E{Key: "user", Value: subscription.User}, primitive.E{Key: "subscription", Value: subscription.Subscription}}
-	update := bson.D{primitive.E{Key: "$set", Value: subscription}}
+	filter := bson.D{{Key: "user", Value: subscription.User}, {Key: "feedID", Value: subscription.FeedID}}
+	update := bson.D{{Key: "$set", Value: subscription}}
 
 	result, err := collection.UpdateOne(ctx, filter, update, options)
 

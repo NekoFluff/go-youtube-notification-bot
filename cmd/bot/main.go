@@ -45,7 +45,7 @@ func main() {
 		commands.Ping(),
 		commands.Subscription(),
 	)
-	bot.RegisterCommands()
+	bot.RegisterCommands(os.Getenv("DISCORD_GUILD_ID"))
 
 	// Load environment variables for pubsubhub subscriber
 	webpage := utils.GetEnvVar("WEBPAGE")
@@ -57,12 +57,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	setupTwitchCallbackEndpoint(bot)
+	if os.Getenv("ENV") != "local" {
+		setupTwitchCallbackEndpoint(bot)
 
-	// Start up new subscriber client
-	go pubsubhub.StartSubscriber(webpage, portInt, bot)
+		// Start up new subscriber client
+		go pubsubhub.StartSubscriber(webpage, portInt, bot)
 
-	subscribeToTwitchWebhook(bot)
+		subscribeToTwitchWebhook(bot)
+	}
 
 	// Wait here until CTRL-C or other term signal is received.
 	fmt.Println("Bot is now running. Press CTRL-C to exit.")

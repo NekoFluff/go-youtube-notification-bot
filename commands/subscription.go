@@ -8,17 +8,19 @@ import (
 	"github.com/NekoFluff/discord"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/data"
 	"github.com/bwmarrin/discordgo"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func Subscription() discord.Command {
-	command := "subscription"
+	command := "subscription2"
 
-	creatorCommandOption := []*discordgo.ApplicationCommandOption{
+	vtuberCommandOption := []*discordgo.ApplicationCommandOption{
 		{
-			Type:        discordgo.ApplicationCommandOptionString,
-			Name:        "creator",
-			Description: "The creator (e.g. gura)",
-			Required:    true,
+			Type:         discordgo.ApplicationCommandOptionString,
+			Name:         "vtuber",
+			Description:  "The vtuber (e.g. Gura)",
+			Required:     true,
+			Autocomplete: true,
 		},
 	}
 
@@ -31,13 +33,13 @@ func Subscription() discord.Command {
 					Name:        "add",
 					Description: "Subscribe to get DMs when a livestream goes live! (matches by first or last name)",
 					Type:        discordgo.ApplicationCommandOptionSubCommand,
-					Options:     creatorCommandOption,
+					Options:     vtuberCommandOption,
 				},
 				{
 					Name:        "remove",
 					Description: "Unsubscribe to not longer get DMs when a livestream goes live.",
 					Type:        discordgo.ApplicationCommandOptionSubCommand,
-					Options:     creatorCommandOption,
+					Options:     vtuberCommandOption,
 				},
 				{
 					Name:        "list",
@@ -59,43 +61,57 @@ func Subscription() discord.Command {
 			}
 
 			if add := optionMap["add"]; add != nil {
-				creator := add.Options[0].StringValue()
+				if i.Type == discordgo.InteractionApplicationCommandAutocomplete {
+					handleAutocomplete(add.Options, s, i)
+					return
+				} else if i.Type == discordgo.InteractionApplicationCommand {
+					feedID, _ := primitive.ObjectIDFromHex(add.Options[0].StringValue())
 
-				subscription := data.Subscription{
-					User:         user.ID,
-					Subscription: creator,
-				}
-				data.SaveSubscription(subscription)
+					subscription := data.Subscription{
+						User:   user.ID,
+						FeedID: feedID,
+					}
+					data.SaveSubscription(subscription)
 
-				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-					Type: discordgo.InteractionResponseChannelMessageWithSource,
-					Data: &discordgo.InteractionResponseData{
-						Content: fmt.Sprintf("Subscribed to `%v`", creator),
-					},
-				})
-				if err != nil {
-					slog.Error("Failed to respond to interaction", "error", err)
+					feed, _ := data.GetFeedByID(feedID)
+
+					err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+						Type: discordgo.InteractionResponseChannelMessageWithSource,
+						Data: &discordgo.InteractionResponseData{
+							Content: fmt.Sprintf("Subscribed to `%v`", feed.FullName()),
+						},
+					})
+					if err != nil {
+						slog.Error("Failed to respond to interaction", "error", err)
+					}
 				}
 			} else if remove := optionMap["remove"]; remove != nil {
-				creator := remove.Options[0].StringValue()
+				if i.Type == discordgo.InteractionApplicationCommandAutocomplete {
+					handleAutocomplete(remove.Options, s, i)
+					return
+				} else if i.Type == discordgo.InteractionApplicationCommand {
+					feedID, _ := primitive.ObjectIDFromHex(remove.Options[0].StringValue())
 
-				subscription := data.Subscription{
-					User:         user.ID,
-					Subscription: creator,
-				}
-				data.DeleteSubscription(subscription)
+					subscription := data.Subscription{
+						User:   user.ID,
+						FeedID: feedID,
+					}
+					data.DeleteSubscription(subscription)
 
-				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-					Type: discordgo.InteractionResponseChannelMessageWithSource,
-					Data: &discordgo.InteractionResponseData{
-						Content: fmt.Sprintf("Removed `%s` subscription", creator),
-					},
-				})
-				if err != nil {
-					slog.Error("Failed to respond to interaction", "error", err)
+					feed, _ := data.GetFeedByID(feedID)
+
+					err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+						Type: discordgo.InteractionResponseChannelMessageWithSource,
+						Data: &discordgo.InteractionResponseData{
+							Content: fmt.Sprintf("Removed `%s` subscription", feed.FullName()),
+						},
+					})
+					if err != nil {
+						slog.Error("Failed to respond to interaction", "error", err)
+					}
 				}
 			} else if list := optionMap["list"]; list != nil {
-				subscriptions, err := data.GetSubscriptionsForUser(user.ID)
+				feeds, err := data.GetFeedsForUserBySubscription(user.ID)
 
 				if err != nil {
 					slog.Error("Failed to get subscription for the user", "error", err, "user", user.ID)
@@ -113,7 +129,7 @@ func Subscription() discord.Command {
 				}
 
 				// Check if we have any subscriptions
-				if (len(subscriptions)) == 0 {
+				if (len(feeds)) == 0 {
 					err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 						Type: discordgo.InteractionResponseChannelMessageWithSource,
 						Data: &discordgo.InteractionResponseData{
@@ -126,22 +142,22 @@ func Subscription() discord.Command {
 					return
 				}
 
-				// Get all creators
-				creators := make([]string, len(subscriptions))
-				for i, sub := range subscriptions {
-					creators[i] = sub.Subscription
+				// Get all vtubers
+				vtubers := make([]string, len(feeds))
+				for i, feed := range feeds {
+					vtubers[i] = feed.FullName()
 				}
 
-				// Join creators with a comma
-				creatorsString := fmt.Sprintf("Your subscriptions: `%s`", creators[0])
-				for _, creator := range creators[1:] {
-					creatorsString += fmt.Sprintf(", `%s`", creator)
+				// Join vtubers with a comma
+				vtubersString := fmt.Sprintf("Your subscriptions: `%s`", vtubers[0])
+				for _, vtuber := range vtubers[1:] {
+					vtubersString += fmt.Sprintf(", `%s`", vtuber)
 				}
 
 				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
-						Content: creatorsString,
+						Content: vtubersString,
 					},
 				})
 				if err != nil {
@@ -159,5 +175,36 @@ func Subscription() discord.Command {
 				}
 			}
 		},
+	}
+}
+
+func handleAutocomplete(options []*discordgo.ApplicationCommandInteractionDataOption, s *discordgo.Session, i *discordgo.InteractionCreate) {
+	vtuber := options[0].StringValue()
+
+	// Get all feeds
+	feeds, err := data.GetFeedsByName(vtuber, 20)
+	if err != nil {
+		slog.Error("Failed to get feeds", "error", err)
+		feeds = []data.ChannelFeed{}
+	}
+
+	// Create a list of vtubers for the autocomplete
+	choices := make([]*discordgo.ApplicationCommandOptionChoice, len(feeds))
+	for i, feed := range feeds {
+		choices[i] = &discordgo.ApplicationCommandOptionChoice{
+			Name:  feed.FullName(),
+			Value: feed.ID,
+		}
+	}
+
+	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionApplicationCommandAutocompleteResult,
+		Data: &discordgo.InteractionResponseData{
+			Choices: choices,
+		},
+	})
+
+	if err != nil {
+		slog.Error("Failed to respond to interaction", "error", err)
 	}
 }
