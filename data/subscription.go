@@ -36,6 +36,8 @@ func GetSubscriptions(authors []string) ([]SubscriptionGroup, error) {
 		return nil, err
 	}
 
+	slog.Info(fmt.Sprintf("Found %d subscriptions to notify for the authors %v\n", len(results), authors))
+
 	return results, nil
 }
 

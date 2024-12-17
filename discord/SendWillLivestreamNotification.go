@@ -3,6 +3,7 @@ package discord
 import (
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/NekoFluff/discord"
@@ -35,5 +36,8 @@ func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream
 		message := fmt.Sprintf("%s livestream @<t:%d:F> <t:%d:R>\n%s", livestream.Author, ts, ts, livestream.Url)
 		slog.Info(message)
 		bot.SendChannelMessage("hololive-notifications", message)
+
+		authors := strings.Split(strings.ToLower(livestream.Author), " ")
+		SendSubscriberMessage(bot, authors, message)
 	}
 }
