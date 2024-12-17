@@ -10,12 +10,12 @@ import (
 	"github.com/NekoFluff/hololive-livestream-notifier-go/data"
 )
 
-func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream) {
+func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream, force bool) {
 	if livestream.Date.Before(time.Now()) {
 		return
 	}
 
-	storedLivestream, err := data.GetLivestream(livestream.Url)
+	storedLivestream, _ := data.GetLivestream(livestream.Url)
 
 	dateChanged := false
 	if storedLivestream != nil {
@@ -23,7 +23,7 @@ func SendWillLivestreamNotification(bot *discord.Bot, livestream data.Livestream
 	}
 
 	// Only send a `will livestream on` message if the time the livestream starts has changed
-	if err != nil || dateChanged {
+	if storedLivestream == nil || dateChanged || force {
 		// load PST time zone
 		loc, err := time.LoadLocation("America/Los_Angeles")
 		if err != nil {

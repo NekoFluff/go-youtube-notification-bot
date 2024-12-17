@@ -9,6 +9,7 @@ import (
 
 	"github.com/NekoFluff/discord"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/commands"
+	"github.com/NekoFluff/hololive-livestream-notifier-go/data"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/pubsubhub"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/twitch"
 	"github.com/NekoFluff/hololive-livestream-notifier-go/utils"
@@ -136,28 +137,57 @@ func main() {
 				},
 			},
 			{
-				Name:      "notify",
-				Usage:     "test subscriber notifications",
-				ArgsUsage: "<vtuber_name> <message>",
-				Action: func(cCtx *cli.Context) error {
-					if cCtx.NArg() != 2 {
-						return fmt.Errorf("<vtuber_name> and <message> arguments required")
-					}
+				Name:  "notify",
+				Usage: "test subscriber notifications",
+				Subcommands: []*cli.Command{
+					{
+						Name:      "name",
+						Usage:     "send a test notification to subscribers of a vtuber",
+						Category:  "Notifications",
+						ArgsUsage: "<vtuber_name> <message>",
+						Action: func(cCtx *cli.Context) error {
+							if cCtx.NArg() != 2 {
+								return fmt.Errorf("<vtuber_name> and <message> arguments required")
+							}
 
-					token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
-					bot := discord.NewBot(token)
-					defer bot.Stop()
+							token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
+							bot := discord.NewBot(token)
+							defer bot.Stop()
 
-					bot.AddCommands(
-						commands.Ping(),
-						commands.Subscription(),
-					)
-					bot.RegisterCommands(os.Getenv("DISCORD_GUILD_ID"))
+							args := cCtx.Args()
+							internalDiscord.SendSubscriberMessage(bot, []string{args.Get(0)}, args.Get(1))
 
-					args := cCtx.Args()
-					internalDiscord.SendSubscriberMessage(bot, []string{args.Get(0)}, args.Get(1))
+							print("Sent test notification to subscribers")
+							return nil
+						},
+					},
+					{
+						Name:      "url",
+						Usage:     "send a notification for a youtube url",
+						Category:  "Notifications",
+						ArgsUsage: "<url>",
+						Action: func(cCtx *cli.Context) error {
+							if cCtx.NArg() != 1 {
+								return fmt.Errorf("<url> argument required")
+							}
 
-					return nil
+							args := cCtx.Args()
+							livestream, err := data.GetLivestream(args.Get(0))
+
+							if err != nil {
+								slog.Error("Failed to retrieve livestream", "error", err)
+								return err
+							}
+
+							token := utils.GetEnvVar("DISCORD_BOT_TOKEN")
+							bot := discord.NewBot(token)
+							defer bot.Stop()
+
+							internalDiscord.SendWillLivestreamNotification(bot, *livestream, true)
+
+							return nil
+						},
+					},
 				},
 			},
 		},

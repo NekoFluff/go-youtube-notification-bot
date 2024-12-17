@@ -88,7 +88,7 @@ func ProcessFeed(bot *mydiscord.Bot, feed Feed) {
 
 			// We need to do this before saving the livestream so we can do some
 			// comparison checks with the time the video goes live
-			discord.SendWillLivestreamNotification(bot, livestream)
+			discord.SendWillLivestreamNotification(bot, livestream, false)
 
 			// Save the livestream and set up notifications
 			data.SaveLivestream(livestream)
